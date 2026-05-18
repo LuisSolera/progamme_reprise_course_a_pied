@@ -13,19 +13,20 @@
   <div class="app">
     <header>
       <h1>Programme de reprise de course à pied</h1>
-      <p class="subtitle">Coche simplement chaque séance complétée. Les coches restent enregistrées sur cet appareil.</p>
+      <p class="subtitle">Coche simplement chaque séance complétée. Les coches restent enregistrées sur tous tes appareils.</p>
       <p class="info">
         Rappels : débuter et terminer la sortie par 5 minutes de marche (facultatif), courir 4 à 6 fois par semaine,
         et selon les symptômes, reprendre la séance précédente, répéter la même ou sauter 1 à 2 entraînements.
       </p>
+      <div class="auth-bar">
+        <button id="auth-btn">Se connecter avec Google</button>
+        <span id="auth-status">Non connecté — les coches ne seront pas sauvegardées.</span>
+      </div>
     </header>
 
     <main class="weeks">
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 1</div>
-          <div class="week-counter" data-week-count="1"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 1</div><div class="week-counter" data-week-count="1"></div></div>
         <ul>
           <li><input id="w1s1" type="checkbox" data-id="w1s1"><label for="w1s1">5'M + 3x (1'C / 1'M) + 5'M</label></li>
           <li><input id="w1s2" type="checkbox" data-id="w1s2"><label for="w1s2">4x (1'C / 1'M)</label></li>
@@ -34,12 +35,8 @@
           <li><input id="w1s5" type="checkbox" data-id="w1s5"><label for="w1s5">7x (1'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 2</div>
-          <div class="week-counter" data-week-count="2"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 2</div><div class="week-counter" data-week-count="2"></div></div>
         <ul>
           <li><input id="w2s1" type="checkbox" data-id="w2s1"><label for="w2s1">8x (1'C / 1'M)</label></li>
           <li><input id="w2s2" type="checkbox" data-id="w2s2"><label for="w2s2">9x (1'C / 1'M)</label></li>
@@ -48,12 +45,8 @@
           <li><input id="w2s5" type="checkbox" data-id="w2s5"><label for="w2s5">12x (1'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 3</div>
-          <div class="week-counter" data-week-count="3"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 3</div><div class="week-counter" data-week-count="3"></div></div>
         <ul>
           <li><input id="w3s1" type="checkbox" data-id="w3s1"><label for="w3s1">13x (1'C / 1'M)</label></li>
           <li><input id="w3s2" type="checkbox" data-id="w3s2"><label for="w3s2">14x (1'C / 1'M)</label></li>
@@ -62,12 +55,8 @@
           <li><input id="w3s5" type="checkbox" data-id="w3s5"><label for="w3s5">4x (2'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 4</div>
-          <div class="week-counter" data-week-count="4"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 4</div><div class="week-counter" data-week-count="4"></div></div>
         <ul>
           <li><input id="w4s1" type="checkbox" data-id="w4s1"><label for="w4s1">5x (2'C / 1'M)</label></li>
           <li><input id="w4s2" type="checkbox" data-id="w4s2"><label for="w4s2">6x (2'C / 1'M)</label></li>
@@ -76,12 +65,8 @@
           <li><input id="w4s5" type="checkbox" data-id="w4s5"><label for="w4s5">9x (2'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 5</div>
-          <div class="week-counter" data-week-count="5"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 5</div><div class="week-counter" data-week-count="5"></div></div>
         <ul>
           <li><input id="w5s1" type="checkbox" data-id="w5s1"><label for="w5s1">10x (2'C / 1'M)</label></li>
           <li><input id="w5s2" type="checkbox" data-id="w5s2"><label for="w5s2">3x (3'C / 1'M)</label></li>
@@ -90,12 +75,8 @@
           <li><input id="w5s5" type="checkbox" data-id="w5s5"><label for="w5s5">6x (3'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 6</div>
-          <div class="week-counter" data-week-count="6"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 6</div><div class="week-counter" data-week-count="6"></div></div>
         <ul>
           <li><input id="w6s1" type="checkbox" data-id="w6s1"><label for="w6s1">7x (3'C / 1'M)</label></li>
           <li><input id="w6s2" type="checkbox" data-id="w6s2"><label for="w6s2">8x (3'C / 1'M)</label></li>
@@ -104,12 +85,8 @@
           <li><input id="w6s5" type="checkbox" data-id="w6s5"><label for="w6s5">4x (4'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 7</div>
-          <div class="week-counter" data-week-count="7"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 7</div><div class="week-counter" data-week-count="7"></div></div>
         <ul>
           <li><input id="w7s1" type="checkbox" data-id="w7s1"><label for="w7s1">5x (4'C / 1'M)</label></li>
           <li><input id="w7s2" type="checkbox" data-id="w7s2"><label for="w7s2">6x (4'C / 1'M)</label></li>
@@ -118,12 +95,8 @@
           <li><input id="w7s5" type="checkbox" data-id="w7s5"><label for="w7s5">3x (9'C / 1'M)</label></li>
         </ul>
       </section>
-
       <section class="week">
-        <div class="week-header">
-          <div class="week-title">Semaine 8</div>
-          <div class="week-counter" data-week-count="8"></div>
-        </div>
+        <div class="week-header"><div class="week-title">Semaine 8</div><div class="week-counter" data-week-count="8"></div></div>
         <ul>
           <li><input id="w8s1" type="checkbox" data-id="w8s1"><label for="w8s1">1x (14'C / 1'M)</label></li>
           <li><input id="w8s2" type="checkbox" data-id="w8s2"><label for="w8s2">2x (14'C / 1'M)</label></li>

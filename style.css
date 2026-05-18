@@ -20,9 +20,7 @@
   }
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -38,26 +36,27 @@ body {
   padding: 1.5rem 1.25rem 2.5rem;
 }
 
-header {
-  margin-bottom: 1.5rem;
+header { margin-bottom: 1.5rem; }
+
+h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
+
+.subtitle { margin: 0; font-size: 0.95rem; color: var(--muted); }
+
+.info { font-size: 0.85rem; color: var(--muted); margin: 0.75rem 0 1.25rem; }
+
+.auth-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
-h1 {
-  margin: 0 0 0.25rem;
-  font-size: 1.4rem;
-}
-
-.subtitle {
-  margin: 0;
-  font-size: 0.95rem;
-  color: var(--muted);
-}
-
-.info {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0.75rem 0 1.25rem;
-}
+#auth-status { font-size: 0.85rem; color: var(--muted); }
 
 .weeks {
   display: grid;
@@ -66,9 +65,7 @@ h1 {
 }
 
 @media (max-width: 700px) {
-  .weeks {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  .weeks { grid-template-columns: minmax(0, 1fr); }
 }
 
 .week {
@@ -88,44 +85,19 @@ h1 {
   padding-bottom: 0.35rem;
 }
 
-.week-title {
-  font-size: 0.98rem;
-  font-weight: 600;
-}
+.week-title { font-size: 0.98rem; font-weight: 600; }
 
-.week-counter {
-  font-size: 0.8rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
+.week-counter { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
 
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0.2rem 0 0;
-}
+ul { list-style: none; margin: 0; padding: 0.2rem 0 0; }
 
-li {
-  display: flex;
-  align-items: center;
-  padding: 0.3rem 0;
-  gap: 0.6rem;
-}
+li { display: flex; align-items: center; padding: 0.3rem 0; gap: 0.6rem; }
 
-li + li {
-  border-top: 1px dashed #e3e8ef;
-}
+li + li { border-top: 1px dashed #e3e8ef; }
 
-input[type="checkbox"] {
-  width: 1.1rem;
-  height: 1.1rem;
-  accent-color: var(--primary);
-}
+input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--primary); }
 
-label {
-  font-size: 0.9rem;
-  cursor: pointer;
-}
+label { font-size: 0.9rem; cursor: pointer; }
 
 .footer {
   margin-top: 1.5rem;
@@ -146,11 +118,6 @@ button {
   color: var(--primary);
 }
 
-button:hover {
-  background: #d7e9ee;
-}
+button:hover { background: #d7e9ee; }
 
-.small-text {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
+.small-text { font-size: 0.8rem; color: var(--muted); }
