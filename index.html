@@ -3,139 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12181b" media="(prefers-color-scheme: dark)">
   <title>Programme de reprise de course à pied</title>
   <link rel="manifest" href="./manifest.webmanifest">
-  <style>
-    :root {
-      --bg: #f5f7fa;
-      --surface: #ffffff;
-      --border: #d1d9e0;
-      --text: #12212b;
-      --muted: #617080;
-      --primary: #0b7285;
-      --radius: 0.75rem;
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .app {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 1.5rem 1.25rem 2.5rem;
-    }
-    header {
-      margin-bottom: 1.5rem;
-    }
-    h1 {
-      margin: 0 0 0.25rem;
-      font-size: 1.4rem;
-    }
-    .subtitle {
-      margin: 0;
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-    .info {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin: 0.75rem 0 1.25rem;
-    }
-    .weeks {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-    }
-    @media (max-width: 700px) {
-      .weeks { grid-template-columns: minmax(0, 1fr); }
-    }
-	@media (prefers-color-scheme: dark) {
-	  :root {
-	    --bg: #12181b;
-        --surface: #1a2327;
-        --border: #33464d;
-        --text: #edf5f7;
-        --muted: #b0c1c7;
-        --primary: #42a8bb;
-	  }
-	}
-    .week {
-      background: var(--surface);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      padding: 0.9rem 0.9rem 0.8rem;
-    }
-    .week-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.35rem;
-      border-bottom: 1px solid #e1e6ec;
-      padding-bottom: 0.35rem;
-    }
-    .week-title {
-      font-size: 0.98rem;
-      font-weight: 600;
-    }
-    .week-counter {
-      font-size: 0.8rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0.2rem 0 0;
-    }
-    li {
-      display: flex;
-      align-items: center;
-      padding: 0.3rem 0;
-      gap: 0.6rem;
-    }
-    li + li {
-      border-top: 1px dashed #e3e8ef;
-    }
-    input[type="checkbox"] {
-      width: 1.1rem;
-      height: 1.1rem;
-      accent-color: var(--primary);
-    }
-    label {
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    .footer {
-      margin-top: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 0.5rem 0.9rem;
-      font-size: 0.85rem;
-      cursor: pointer;
-      background: #e9f3f6;
-      color: var(--primary);
-    }
-    button:hover {
-      background: #d7e9ee;
-    }
-    .small-text {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <div class="app">
@@ -155,26 +27,11 @@
           <div class="week-counter" data-week-count="1"></div>
         </div>
         <ul>
-          <li>
-            <input id="w1s1" type="checkbox" data-id="w1s1">
-            <label for="w1s1">5'M + 3x (1'C / 1'M) + 5'M</label>
-          </li>
-          <li>
-            <input id="w1s2" type="checkbox" data-id="w1s2">
-            <label for="w1s2">4x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w1s3" type="checkbox" data-id="w1s3">
-            <label for="w1s3">5x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w1s4" type="checkbox" data-id="w1s4">
-            <label for="w1s4">6x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w1s5" type="checkbox" data-id="w1s5">
-            <label for="w1s5">7x (1'C / 1'M)</label>
-          </li>
+          <li><input id="w1s1" type="checkbox" data-id="w1s1"><label for="w1s1">5'M + 3x (1'C / 1'M) + 5'M</label></li>
+          <li><input id="w1s2" type="checkbox" data-id="w1s2"><label for="w1s2">4x (1'C / 1'M)</label></li>
+          <li><input id="w1s3" type="checkbox" data-id="w1s3"><label for="w1s3">5x (1'C / 1'M)</label></li>
+          <li><input id="w1s4" type="checkbox" data-id="w1s4"><label for="w1s4">6x (1'C / 1'M)</label></li>
+          <li><input id="w1s5" type="checkbox" data-id="w1s5"><label for="w1s5">7x (1'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -184,26 +41,11 @@
           <div class="week-counter" data-week-count="2"></div>
         </div>
         <ul>
-          <li>
-            <input id="w2s1" type="checkbox" data-id="w2s1">
-            <label for="w2s1">8x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w2s2" type="checkbox" data-id="w2s2">
-            <label for="w2s2">9x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w2s3" type="checkbox" data-id="w2s3">
-            <label for="w2s3">10x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w2s4" type="checkbox" data-id="w2s4">
-            <label for="w2s4">11x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w2s5" type="checkbox" data-id="w2s5">
-            <label for="w2s5">12x (1'C / 1'M)</label>
-          </li>
+          <li><input id="w2s1" type="checkbox" data-id="w2s1"><label for="w2s1">8x (1'C / 1'M)</label></li>
+          <li><input id="w2s2" type="checkbox" data-id="w2s2"><label for="w2s2">9x (1'C / 1'M)</label></li>
+          <li><input id="w2s3" type="checkbox" data-id="w2s3"><label for="w2s3">10x (1'C / 1'M)</label></li>
+          <li><input id="w2s4" type="checkbox" data-id="w2s4"><label for="w2s4">11x (1'C / 1'M)</label></li>
+          <li><input id="w2s5" type="checkbox" data-id="w2s5"><label for="w2s5">12x (1'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -213,26 +55,11 @@
           <div class="week-counter" data-week-count="3"></div>
         </div>
         <ul>
-          <li>
-            <input id="w3s1" type="checkbox" data-id="w3s1">
-            <label for="w3s1">13x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w3s2" type="checkbox" data-id="w3s2">
-            <label for="w3s2">14x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w3s3" type="checkbox" data-id="w3s3">
-            <label for="w3s3">15x (1'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w3s4" type="checkbox" data-id="w3s4">
-            <label for="w3s4">3x (2'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w3s5" type="checkbox" data-id="w3s5">
-            <label for="w3s5">4x (2'C / 1'M)</label>
-          </li>
+          <li><input id="w3s1" type="checkbox" data-id="w3s1"><label for="w3s1">13x (1'C / 1'M)</label></li>
+          <li><input id="w3s2" type="checkbox" data-id="w3s2"><label for="w3s2">14x (1'C / 1'M)</label></li>
+          <li><input id="w3s3" type="checkbox" data-id="w3s3"><label for="w3s3">15x (1'C / 1'M)</label></li>
+          <li><input id="w3s4" type="checkbox" data-id="w3s4"><label for="w3s4">3x (2'C / 1'M)</label></li>
+          <li><input id="w3s5" type="checkbox" data-id="w3s5"><label for="w3s5">4x (2'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -242,26 +69,11 @@
           <div class="week-counter" data-week-count="4"></div>
         </div>
         <ul>
-          <li>
-            <input id="w4s1" type="checkbox" data-id="w4s1">
-            <label for="w4s1">5x (2'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w4s2" type="checkbox" data-id="w4s2">
-            <label for="w4s2">6x (2'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w4s3" type="checkbox" data-id="w4s3">
-            <label for="w4s3">7x (2'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w4s4" type="checkbox" data-id="w4s4">
-            <label for="w4s4">8x (2'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w4s5" type="checkbox" data-id="w4s5">
-            <label for="w4s5">9x (2'C / 1'M)</label>
-          </li>
+          <li><input id="w4s1" type="checkbox" data-id="w4s1"><label for="w4s1">5x (2'C / 1'M)</label></li>
+          <li><input id="w4s2" type="checkbox" data-id="w4s2"><label for="w4s2">6x (2'C / 1'M)</label></li>
+          <li><input id="w4s3" type="checkbox" data-id="w4s3"><label for="w4s3">7x (2'C / 1'M)</label></li>
+          <li><input id="w4s4" type="checkbox" data-id="w4s4"><label for="w4s4">8x (2'C / 1'M)</label></li>
+          <li><input id="w4s5" type="checkbox" data-id="w4s5"><label for="w4s5">9x (2'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -271,26 +83,11 @@
           <div class="week-counter" data-week-count="5"></div>
         </div>
         <ul>
-          <li>
-            <input id="w5s1" type="checkbox" data-id="w5s1">
-            <label for="w5s1">10x (2'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w5s2" type="checkbox" data-id="w5s2">
-            <label for="w5s2">3x (3'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w5s3" type="checkbox" data-id="w5s3">
-            <label for="w5s3">4x (3'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w5s4" type="checkbox" data-id="w5s4">
-            <label for="w5s4">5x (3'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w5s5" type="checkbox" data-id="w5s5">
-            <label for="w5s5">6x (3'C / 1'M)</label>
-          </li>
+          <li><input id="w5s1" type="checkbox" data-id="w5s1"><label for="w5s1">10x (2'C / 1'M)</label></li>
+          <li><input id="w5s2" type="checkbox" data-id="w5s2"><label for="w5s2">3x (3'C / 1'M)</label></li>
+          <li><input id="w5s3" type="checkbox" data-id="w5s3"><label for="w5s3">4x (3'C / 1'M)</label></li>
+          <li><input id="w5s4" type="checkbox" data-id="w5s4"><label for="w5s4">5x (3'C / 1'M)</label></li>
+          <li><input id="w5s5" type="checkbox" data-id="w5s5"><label for="w5s5">6x (3'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -300,26 +97,11 @@
           <div class="week-counter" data-week-count="6"></div>
         </div>
         <ul>
-          <li>
-            <input id="w6s1" type="checkbox" data-id="w6s1">
-            <label for="w6s1">7x (3'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w6s2" type="checkbox" data-id="w6s2">
-            <label for="w6s2">8x (3'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w6s3" type="checkbox" data-id="w6s3">
-            <label for="w6s3">2x (4'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w6s4" type="checkbox" data-id="w6s4">
-            <label for="w6s4">3x (4'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w6s5" type="checkbox" data-id="w6s5">
-            <label for="w6s5">4x (4'C / 1'M)</label>
-          </li>
+          <li><input id="w6s1" type="checkbox" data-id="w6s1"><label for="w6s1">7x (3'C / 1'M)</label></li>
+          <li><input id="w6s2" type="checkbox" data-id="w6s2"><label for="w6s2">8x (3'C / 1'M)</label></li>
+          <li><input id="w6s3" type="checkbox" data-id="w6s3"><label for="w6s3">2x (4'C / 1'M)</label></li>
+          <li><input id="w6s4" type="checkbox" data-id="w6s4"><label for="w6s4">3x (4'C / 1'M)</label></li>
+          <li><input id="w6s5" type="checkbox" data-id="w6s5"><label for="w6s5">4x (4'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -329,26 +111,11 @@
           <div class="week-counter" data-week-count="7"></div>
         </div>
         <ul>
-          <li>
-            <input id="w7s1" type="checkbox" data-id="w7s1">
-            <label for="w7s1">5x (4'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w7s2" type="checkbox" data-id="w7s2">
-            <label for="w7s2">6x (4'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w7s3" type="checkbox" data-id="w7s3">
-            <label for="w7s3">1x (9'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w7s4" type="checkbox" data-id="w7s4">
-            <label for="w7s4">2x (9'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w7s5" type="checkbox" data-id="w7s5">
-            <label for="w7s5">3x (9'C / 1'M)</label>
-          </li>
+          <li><input id="w7s1" type="checkbox" data-id="w7s1"><label for="w7s1">5x (4'C / 1'M)</label></li>
+          <li><input id="w7s2" type="checkbox" data-id="w7s2"><label for="w7s2">6x (4'C / 1'M)</label></li>
+          <li><input id="w7s3" type="checkbox" data-id="w7s3"><label for="w7s3">1x (9'C / 1'M)</label></li>
+          <li><input id="w7s4" type="checkbox" data-id="w7s4"><label for="w7s4">2x (9'C / 1'M)</label></li>
+          <li><input id="w7s5" type="checkbox" data-id="w7s5"><label for="w7s5">3x (9'C / 1'M)</label></li>
         </ul>
       </section>
 
@@ -358,26 +125,11 @@
           <div class="week-counter" data-week-count="8"></div>
         </div>
         <ul>
-          <li>
-            <input id="w8s1" type="checkbox" data-id="w8s1">
-            <label for="w8s1">1x (14'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w8s2" type="checkbox" data-id="w8s2">
-            <label for="w8s2">2x (14'C / 1'M)</label>
-          </li>
-          <li>
-            <input id="w8s3" type="checkbox" data-id="w8s3">
-            <label for="w8s3">1x 20'C</label>
-          </li>
-          <li>
-            <input id="w8s4" type="checkbox" data-id="w8s4">
-            <label for="w8s4">1x 25'C</label>
-          </li>
-          <li>
-            <input id="w8s5" type="checkbox" data-id="w8s5">
-            <label for="w8s5">1x 30'C</label>
-          </li>
+          <li><input id="w8s1" type="checkbox" data-id="w8s1"><label for="w8s1">1x (14'C / 1'M)</label></li>
+          <li><input id="w8s2" type="checkbox" data-id="w8s2"><label for="w8s2">2x (14'C / 1'M)</label></li>
+          <li><input id="w8s3" type="checkbox" data-id="w8s3"><label for="w8s3">1x 20'C</label></li>
+          <li><input id="w8s4" type="checkbox" data-id="w8s4"><label for="w8s4">1x 25'C</label></li>
+          <li><input id="w8s5" type="checkbox" data-id="w8s5"><label for="w8s5">1x 30'C</label></li>
         </ul>
       </section>
     </main>
@@ -388,54 +140,6 @@
     </div>
   </div>
 
-  <script>
-    (function() {
-      const STORAGE_PREFIX = 'fractionne-i-checklist:';
-      const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"][data-id]'));
-      const weekCounters = document.querySelectorAll('[data-week-count]');
-      const globalProgressEl = document.getElementById('global-progress');
-      const resetBtn = document.getElementById('reset');
-
-      // Charger l'état stocké
-      checkboxes.forEach(cb => {
-        const key = STORAGE_PREFIX + cb.dataset.id;
-        if (localStorage.getItem(key) === '1') {
-          cb.checked = true;
-        }
-        cb.addEventListener('change', () => {
-          if (cb.checked) {
-            localStorage.setItem(key, '1');
-          } else {
-            localStorage.removeItem(key);
-          }
-          updateCounters();
-        });
-      });
-
-      function updateCounters() {
-        // comptage par semaine
-        weekCounters.forEach(span => {
-          const week = span.getAttribute('data-week-count');
-          const weekBoxes = checkboxes.filter(cb => cb.dataset.id.startsWith('w' + week));
-          const done = weekBoxes.filter(cb => cb.checked).length;
-          span.textContent = done + ' / ' + weekBoxes.length;
-        });
-        // comptage global
-        const doneGlobal = checkboxes.filter(cb => cb.checked).length;
-        globalProgressEl.textContent = doneGlobal + ' / ' + checkboxes.length + ' séances complétées au total.';
-      }
-
-      resetBtn.addEventListener('click', () => {
-        if (!confirm('Effacer toutes les coches du programme ?')) return;
-        checkboxes.forEach(cb => {
-          cb.checked = false;
-          localStorage.removeItem(STORAGE_PREFIX + cb.dataset.id);
-        });
-        updateCounters();
-      });
-
-      updateCounters();
-    })();
-  </script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
