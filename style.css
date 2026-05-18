@@ -1,0 +1,156 @@
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --border: #d1d9e0;
+  --text: #12212b;
+  --muted: #617080;
+  --primary: #0b7285;
+  --radius: 0.75rem;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12181b;
+    --surface: #1a2327;
+    --border: #33464d;
+    --text: #edf5f7;
+    --muted: #b0c1c7;
+    --primary: #42a8bb;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+header {
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.4rem;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.info {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.75rem 0 1.25rem;
+}
+
+.weeks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .weeks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.week {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 0.9rem 0.9rem 0.8rem;
+}
+
+.week-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid #e1e6ec;
+  padding-bottom: 0.35rem;
+}
+
+.week-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.week-counter {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.2rem 0 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 0;
+  gap: 0.6rem;
+}
+
+li + li {
+  border-top: 1px dashed #e3e8ef;
+}
+
+input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--primary);
+}
+
+label {
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: #e9f3f6;
+  color: var(--primary);
+}
+
+button:hover {
+  background: #d7e9ee;
+}
+
+.small-text {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
