@@ -9,11 +9,9 @@ async function handleSignedInUser(user) {
   currentUserId = user.userId;
   setAuthButtonLabel('Se déconnecter');
   setAuthStatus('Chargement…');
-
   const checkedSessions = await loadCheckedSessions(user.userId);
   applyCheckedState(checkedSessions);
   attachListeners();
-
   setAuthStatus(`Connecté : ${user.email}`);
 }
 
@@ -52,7 +50,6 @@ function bindAuthButton() {
       await signOut();
       return;
     }
-
     try {
       await signIn();
     } catch (error) {
@@ -66,7 +63,10 @@ function init() {
   observeAuthState(async user => {
     if (user) {
       await handleSignedInUser(user);
-      return;
+    } else {
+      handleSignedOutUser();
     }
   });
 }
+
+init();
