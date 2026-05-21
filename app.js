@@ -2,24 +2,22 @@ import { signIn, signOut, observeAuthState } from './auth.js';
 import { loadCheckedSessions, saveSession, deleteSession, clearAllSessions } from './db.js';
 import { elements, applyCheckedState, clearAllCheckboxes, setAuthStatus, setAuthButtonLabel, updateCounters } from './ui.js';
 
-const ALLOWED_EMAILS = [
-  'solera.jorge.luis@gmail.com'
-];
+
 let currentUserId = null;
 
 async function handleSignedInUser(user) {
-    if (!ALLOWED_EMAILS.includes(user.email)) {
-    await signOut();
-    setAuthStatus('Accès refusé. Ce compte n\'est pas autorisé.');
-    return;
-  }
-
   currentUserId = user.userId;
   setAuthButtonLabel('Se déconnecter');
   setAuthStatus('Chargement…');
-  const checkedSessions = await loadCheckedSessions(user.userId);
-  applyCheckedState(checkedSessions);
-  setAuthStatus(`Connecté : ${user.email}`);
+
+  try {
+    const checkedSessions = await loadCheckedSessions(user.userId);
+    applyCheckedState(checkedSessions);
+    setAuthStatus(`Connecté : ${user.email}`);
+  } catch (error) {
+    await signOut();
+    setAuthStatus('Accès refusé. Ce compte n\'est pas autorisé.');
+  }
 }
 
 function handleSignedOutUser() {
