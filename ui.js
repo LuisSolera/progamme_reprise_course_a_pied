@@ -1,6 +1,6 @@
 const elements = {
   checkboxes: Array.from(document.querySelectorAll('input[type="checkbox"][data-id]')),
-  weekCounters: Array.from(document.querySelectorAll('[data-week-count]')),
+  weekCounters: document.querySelectorAll('[data-week-count]'),
   globalProgress: document.getElementById('global-progress'),
   resetButton: document.getElementById('reset'),
   authButton: document.getElementById('auth-btn'),
@@ -8,16 +8,15 @@ const elements = {
 };
 
 function updateCounters() {
-  const checkboxes = elements.checkboxes;
   elements.weekCounters.forEach(counter => {
     const week = counter.getAttribute('data-week-count');
-    const weekBoxes = checkboxes.filter(box => box.dataset.id.startsWith('w' + week));
+    const weekBoxes = elements.checkboxes.filter(box => box.dataset.id.startsWith('w' + week));
     const checkedCount = weekBoxes.filter(box => box.checked).length;
     counter.textContent = `${checkedCount} / ${weekBoxes.length}`;
   });
 
-  const totalChecked = checkboxes.filter(box => box.checked).length;
-  elements.globalProgress.textContent = `${totalChecked} / ${checkboxes.length} séances complétées au total.`;
+  const totalChecked = elements.checkboxes.filter(box => box.checked).length;
+  elements.globalProgress.textContent = `${totalChecked} / ${elements.checkboxes.length} séances complétées au total.`;
 }
 
 function applyCheckedState(checkedSet) {

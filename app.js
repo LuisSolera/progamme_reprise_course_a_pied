@@ -2,7 +2,6 @@ import { signIn, signOut, observeAuthState } from './auth.js';
 import { loadCheckedSessions, saveSession, deleteSession, clearAllSessions } from './db.js';
 import { elements, applyCheckedState, clearAllCheckboxes, setAuthStatus, setAuthButtonLabel, updateCounters } from './ui.js';
 
-
 let currentUserId = null;
 
 async function handleSignedInUser(user) {
