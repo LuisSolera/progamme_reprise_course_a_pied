@@ -1,8 +1,6 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js';
 import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js';
-import { FIREBASE } from './config.js';
+import { app } from './config.js';
 
-const app = initializeApp(FIREBASE);
 const db = getFirestore(app);
 
 function sessionsCollection(userId) {

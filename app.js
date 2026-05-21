@@ -3,7 +3,6 @@ import { loadCheckedSessions, saveSession, deleteSession, clearAllSessions } fro
 import { elements, applyCheckedState, clearAllCheckboxes, setAuthStatus, setAuthButtonLabel, updateCounters } from './ui.js';
 
 let currentUserId = null;
-let listenersAttached = false;
 
 async function handleSignedInUser(user) {
   currentUserId = user.userId;
@@ -11,23 +10,18 @@ async function handleSignedInUser(user) {
   setAuthStatus('Chargement…');
   const checkedSessions = await loadCheckedSessions(user.userId);
   applyCheckedState(checkedSessions);
-  attachListeners();
   setAuthStatus(`Connecté : ${user.email}`);
 }
 
 function handleSignedOutUser() {
   currentUserId = null;
-  listenersAttached = false;
   setAuthButtonLabel('Se connecter avec Google');
   setAuthStatus('Non connecté — les coches ne seront pas sauvegardées.');
   clearAllCheckboxes();
 }
 
 function attachListeners() {
-  if (listenersAttached) return;
-  listenersAttached = true;
-
-  elements.checkboxes().forEach(checkbox => {
+  elements.checkboxes.forEach(checkbox => {
     checkbox.addEventListener('change', async () => {
       if (!currentUserId) return;
       if (checkbox.checked) await saveSession(currentUserId, checkbox.dataset.id);
@@ -36,7 +30,7 @@ function attachListeners() {
     });
   });
 
-  elements.resetButton().addEventListener('click', async () => {
+  elements.resetButton.addEventListener('click', async () => {
     if (!currentUserId) return;
     if (!confirm('Effacer toutes les coches du programme ?')) return;
     await clearAllSessions(currentUserId);
@@ -45,7 +39,7 @@ function attachListeners() {
 }
 
 function bindAuthButton() {
-  elements.authButton().addEventListener('click', async () => {
+  elements.authButton.addEventListener('click', async () => {
     if (currentUserId) {
       await signOut();
       return;
@@ -59,13 +53,11 @@ function bindAuthButton() {
 }
 
 function init() {
+  attachListeners();
   bindAuthButton();
   observeAuthState(async user => {
-    if (user) {
-      await handleSignedInUser(user);
-    } else {
-      handleSignedOutUser();
-    }
+    if (user) await handleSignedInUser(user);
+    else handleSignedOutUser();
   });
 }
 
