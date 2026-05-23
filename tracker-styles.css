@@ -1,0 +1,201 @@
+/* tracker-styles.css — Session tracker overlay */
+
+#tracker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: oklch(0.12 0.01 200 / 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#tracker-overlay[hidden] { display: none; }
+
+.tracker-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 2rem 2rem 1.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 24px 64px oklch(0.1 0.01 200 / 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tracker-step-counter {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tracker-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+  flex-shrink: 0;
+}
+
+.tracker-close-btn:hover { background: var(--border); color: var(--text); }
+
+/* Step type badge */
+.tracker-type-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  display: inline-block;
+  transition: background 300ms, color 300ms;
+}
+
+.tracker-type-badge[data-type="jog"] {
+  background: color-mix(in oklch, var(--primary) 15%, transparent);
+  color: var(--primary);
+}
+
+.tracker-type-badge[data-type="walk"] {
+  background: color-mix(in oklch, #437a22 15%, transparent);
+  color: #437a22;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tracker-type-badge[data-type="walk"] { color: #6daa45; background: oklch(0.35 0.08 130 / 0.25); }
+}
+
+/* Clock */
+.tracker-clock-wrap {
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+#tracker-clock {
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  transition: color 300ms;
+  line-height: 1;
+}
+
+#tracker-clock.countdown {
+  color: var(--primary);
+  animation: pulse-clock 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-clock {
+  from { transform: scale(1); }
+  to   { transform: scale(1.04); }
+}
+
+/* Step info */
+.tracker-step-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.tracker-step-detail {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0.2rem 0 0;
+}
+
+/* Progress bar */
+.tracker-progress-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#tracker-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+  transition: width 0.9s linear;
+  width: 0%;
+}
+
+/* Controls */
+.tracker-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.tracker-controls button {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  transition: background 150ms, color 150ms;
+}
+
+.tracker-controls button:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.tracker-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-save {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 150ms;
+}
+
+.btn-save:hover:not(:disabled) { opacity: 0.88; }
+.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Start button on each session row */
+.btn-start-session {
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 150ms, color 150ms;
+}
+
+.btn-start-session:hover { background: var(--primary); color: #fff; }

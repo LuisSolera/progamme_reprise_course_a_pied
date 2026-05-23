@@ -1,6 +1,8 @@
 import { signIn, signOut, observeAuthState } from './auth.js';
 import { loadCheckedSessions, saveSession, deleteSession, clearAllSessions } from './db.js';
 import { elements, applyCheckedState, clearAllCheckboxes, setAuthStatus, setAuthButtonLabel, updateCounters } from './ui.js';
+import { openTracker, closeTracker } from './tracker.js';
+import { SESSIONS } from './session.js';
 
 let currentUserId = null;
 
@@ -41,6 +43,24 @@ function attachListeners() {
     if (!confirm('Effacer toutes les coches du programme ?')) return;
     await clearAllSessions(currentUserId);
     clearAllCheckboxes();
+  });
+
+  // Start session buttons
+  document.querySelectorAll('.btn-start-session').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.session;
+      if (!SESSIONS[sid]) return;
+      
+      openTracker(sid, async (completedId) => {
+        // Mark checkbox checked and save to Firestore
+        const checkbox = elements.checkboxes.find(cb => cb.dataset.id === completedId);
+        if (checkbox && !checkbox.checked) {
+          checkbox.checked = true;
+          if (currentUserId) await saveSession(currentUserId, completedId);
+          updateCounters();
+        }
+      });
+    });
   });
 }
 
