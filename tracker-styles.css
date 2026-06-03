@@ -1,201 +1,204 @@
-/* tracker-styles.css — Session tracker overlay */
+/* tracker-styles.css — scoped styles for the Vue tracker overlay */
 
-#tracker-overlay {
+/* ── Overlay backdrop ──────────────────────────────────────────────────── */
+.tracker-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  background: oklch(0.12 0.01 200 / 0.75);
-  backdrop-filter: blur(6px);
+  background: oklch(0.1 0.01 220 / 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
   padding: 1rem;
 }
 
-#tracker-overlay[hidden] { display: none; }
-
+/* ── Card ──────────────────────────────────────────────────────────────── */
 .tracker-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 1.25rem;
-  padding: 2rem 2rem 1.5rem;
+  padding: 1.5rem 1.5rem 1.75rem;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 24px 64px oklch(0.1 0.01 200 / 0.4);
+  max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
+  box-shadow: 0 24px 64px oklch(0.1 0.01 220 / 0.3);
 }
 
+/* ── Header ────────────────────────────────────────────────────────────── */
 .tracker-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .tracker-step-counter {
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
   color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .tracker-close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: transparent;
+  background: none;
+  border: none;
   color: var(--muted);
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
   cursor: pointer;
+  line-height: 1;
   transition: background 150ms, color 150ms;
-  flex-shrink: 0;
 }
-
 .tracker-close-btn:hover { background: var(--border); color: var(--text); }
 
-/* Step type badge */
+/* ── Type badge ────────────────────────────────────────────────────────── */
 .tracker-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.3rem 0.75rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  display: inline-block;
-  transition: background 300ms, color 300ms;
+  letter-spacing: 0.02em;
 }
-
-.tracker-type-badge[data-type="jog"] {
-  background: color-mix(in oklch, var(--primary) 15%, transparent);
+.tracker-type-badge[data-type="walk"] {
+  background: color-mix(in oklch, var(--primary) 12%, var(--surface));
   color: var(--primary);
 }
-
-.tracker-type-badge[data-type="walk"] {
-  background: color-mix(in oklch, #437a22 15%, transparent);
-  color: #437a22;
+.tracker-type-badge[data-type="jog"] {
+  background: color-mix(in oklch, #e07000 14%, var(--surface));
+  color: #c05a00;
 }
-
 @media (prefers-color-scheme: dark) {
-  .tracker-type-badge[data-type="walk"] { color: #6daa45; background: oklch(0.35 0.08 130 / 0.25); }
+  .tracker-type-badge[data-type="jog"] { color: #fda04a; }
 }
 
-/* Clock */
-.tracker-clock-wrap {
+/* ── Clock ─────────────────────────────────────────────────────────────── */
+.tracker-clock {
+  font-size: clamp(3.5rem, 14vw, 5.5rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--primary);
   text-align: center;
   padding: 0.5rem 0;
+  transition: color 0.3s;
+}
+.tracker-clock.is-jog { color: #c05a00; }
+@media (prefers-color-scheme: dark) {
+  .tracker-clock.is-jog { color: #fda04a; }
 }
 
-#tracker-clock {
-  font-size: clamp(3rem, 10vw, 5rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-  transition: color 300ms;
-  line-height: 1;
+/* Pulse animation during 3-sec countdown transition */
+@keyframes clock-pulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.1); opacity: 0.7; }
+}
+.tracker-clock.is-transitioning {
+  animation: clock-pulse 0.6s ease-in-out infinite;
 }
 
-#tracker-clock.countdown {
-  color: var(--primary);
-  animation: pulse-clock 0.35s ease-in-out infinite alternate;
-}
-
-@keyframes pulse-clock {
-  from { transform: scale(1); }
-  to   { transform: scale(1.04); }
-}
-
-/* Step info */
+/* ── Step info ─────────────────────────────────────────────────────────── */
+.tracker-step-info { text-align: center; }
 .tracker-step-label {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--text);
-  margin: 0;
+  margin: 0 0 0.2rem;
+  max-width: none;
 }
-
 .tracker-step-detail {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--muted);
-  margin: 0.2rem 0 0;
+  margin: 0;
+  max-width: none;
 }
 
-/* Progress bar */
+/* ── Progress bar ──────────────────────────────────────────────────────── */
 .tracker-progress-track {
   height: 6px;
   background: var(--border);
   border-radius: 999px;
   overflow: hidden;
 }
-
-#tracker-progress-fill {
+.tracker-progress-fill {
   height: 100%;
-  background: var(--primary);
   border-radius: 999px;
-  transition: width 0.9s linear;
-  width: 0%;
+  background: var(--primary);
+  transition: width 1s linear;
+}
+.tracker-progress-fill[data-type="jog"] { background: #c05a00; }
+@media (prefers-color-scheme: dark) {
+  .tracker-progress-fill[data-type="jog"] { background: #fda04a; }
 }
 
-/* Controls */
+/* ── Step dots ─────────────────────────────────────────────────────────── */
+.tracker-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+}
+.tracker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.3s;
+}
+.tracker-dot.is-done    { background: color-mix(in oklch, var(--primary) 45%, var(--border)); }
+.tracker-dot.is-current { background: var(--primary); transform: scale(1.4); }
+.tracker-dot.is-jog.is-current { background: #c05a00; }
+@media (prefers-color-scheme: dark) {
+  .tracker-dot.is-jog.is-current { background: #fda04a; }
+}
+
+/* ── Controls ──────────────────────────────────────────────────────────── */
 .tracker-controls {
   display: flex;
   gap: 0.75rem;
 }
-
 .tracker-controls button {
   flex: 1;
-  padding: 0.6rem 1rem;
-  border-radius: 999px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  transition: background 150ms, color 150ms;
-}
-
-.tracker-controls button:hover:not(:disabled) {
-  background: var(--border);
-}
-
-.tracker-controls button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.btn-save {
-  background: var(--primary) !important;
-  color: #fff !important;
-  border-color: var(--primary) !important;
-  width: 100%;
-  padding: 0.7rem 1rem;
-  border-radius: 999px;
+  padding: 0.65rem 1rem;
   font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: opacity 150ms;
-}
-
-.btn-save:hover:not(:disabled) { opacity: 0.88; }
-.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Start button on each session row */
-.btn-start-session {
-  padding: 0.2rem 0.7rem;
+  font-weight: 500;
   border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  border: 1px solid var(--primary);
-  background: transparent;
-  color: var(--primary);
+  border: none;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 150ms, color 150ms;
+  transition: background 150ms, opacity 150ms;
 }
+.btn-pause {
+  background: color-mix(in oklch, var(--primary) 14%, var(--surface));
+  color: var(--primary);
+}
+.btn-pause:hover { background: color-mix(in oklch, var(--primary) 24%, var(--surface)); }
 
-.btn-start-session:hover { background: var(--primary); color: #fff; }
+.btn-skip {
+  background: var(--border);
+  color: var(--muted);
+}
+.btn-skip:hover:not(:disabled) { background: color-mix(in oklch, var(--muted) 20%, var(--surface)); }
+.btn-skip:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Save button ───────────────────────────────────────────────────────── */
+.btn-save {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  transition: background 150ms, transform 80ms;
+}
+.btn-save:hover  { background: color-mix(in oklch, var(--primary) 80%, black); }
+.btn-save:active { transform: scale(0.98); }
