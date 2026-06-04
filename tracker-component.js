@@ -86,10 +86,12 @@ export const TrackerComponent = defineComponent({
     function togglePause() { paused.value = !paused.value; }
 
     function skipStep() {
-      if (finished.value || transitioning.value) return;
-      clearTimeout(timerId); // cancel any pending advance
+      if (finished.value) return;
+      
       transitioning.value = false;
+      clearInterval(timerId);
       advanceStep();
+      startTick();
     }
 
     function saveSession() {
