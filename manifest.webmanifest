@@ -1,6 +1,6 @@
 {
-  "name": "Programme rerprise course à pied 1",
-  "short_name": "Programme course 1",
+  "name": "Programme reprise course à pied 1",
+  "short_name": "Course à pied 1",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f7fa",
