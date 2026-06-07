@@ -1,7 +1,6 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js';
-import { app } from './config.js';
+import { GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js';
+import { auth } from './firebase.js';
 
-const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 
@@ -15,11 +14,16 @@ function signOut() {
 
 function observeAuthState(callback) {
   return onAuthStateChanged(auth, user => {
-    if (!user) {
-      callback(null);
-      return;
+    if (!user) { 
+      callback(null);       
+      return; 
     }
-    callback({ userId: user.uid, email: user.email ?? '' });
+    callback(
+      { 
+        userId: user.uid, 
+        email: user.email ?? '' 
+      }
+    );
   });
 }
 
