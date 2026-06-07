@@ -1,4 +1,4 @@
-import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js';
+import { doc, setDoc, deleteDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js';
 import { db } from './firebase.js';
 
 function sessionsCollection(userId) {
@@ -12,14 +12,12 @@ function sessionDocument(userId, sessionId) {
 async function loadCheckedSessions(userId) {
   const snapshot = await getDocs(sessionsCollection(userId));
   const checked = new Set();
-  snapshot.forEach(document => {
-    if (document.data().checked) checked.add(document.id);
-  });
+  snapshot.forEach(document => checked.add(document.id));
   return checked;
 }
 
 async function saveSession(userId, sessionId) {
-  await setDoc(sessionDocument(userId, sessionId), { checked: true });
+  await setDoc(sessionDocument(userId, sessionId), {});
 }
 
 async function deleteSession(userId, sessionId) {
