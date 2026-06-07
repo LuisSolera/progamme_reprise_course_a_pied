@@ -6,6 +6,7 @@ import { signIn, signOut, observeAuthState } from './auth.js';
 import { loadCheckedSessions, saveSession, deleteSession, clearAllSessions } from './db.js';
 import { elements, applyCheckedState, clearAllCheckboxes, setAuthStatus, setAuthButtonLabel, updateCounters } from './ui.js';
 import { TrackerComponent } from './tracker-component.js';
+import { preloadSounds } from './audio.js';
 
 const { createApp, ref } = Vue;
 
@@ -118,6 +119,7 @@ function bindAuthButton() {
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 function init() {
+  preloadSounds(); 
   attachCheckboxListeners();
   attachResetListener();
   attachStartButtonListeners();

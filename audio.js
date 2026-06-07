@@ -1,73 +1,69 @@
-// audio.js — All audio concerns in one place.
-// Uses AudioBuffer (sine bursts) — routes through media channel → headphones work.
+// audio.js — Real audio file playback.
+// All sounds route through the media channel → headphones work, full volume.
 
-let ctx = null;
+// ── Sound file paths ────────────────────────────────────────────────────────
+const SOUNDS = {
+  preparation: './sounds/mixkit-start-match-countdown-1954.mp3',
+  transition:  './sounds/universfield-error-011-352286.mp3',
+  stepEnd:     './sounds/freesound_community-whistle-84607.mp3',
+  sessionEnd:  './sounds/mixkit-police-whistle-614.mp3',
+};
 
-function getCtx() {
-  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-  return ctx;
-}
+// ── Preload all sounds at startup ───────────────────────────────────────────
+// Preloading ensures instant playback with no delay on mobile.
+const audioCache = {};
 
-/**
- * Plays a single beep.
- * @param {number} freq      Hz
- * @param {number} duration  seconds
- * @param {number} volume    0–1
- */
-export function playBeep(freq = 880, duration = 0.1, volume = 0.7) {
-  const audioCtx = getCtx();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-
-  const frameCount = Math.ceil(audioCtx.sampleRate * duration);
-  const buffer = audioCtx.createBuffer(1, frameCount, audioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-
-  for (let i = 0; i < frameCount; i++) {
-    const t = i / audioCtx.sampleRate;
-    const envelope = 1 - i / frameCount; // linear fade-out
-    data[i] = Math.sin(2 * Math.PI * freq * t) * envelope * volume;
+export function preloadSounds() {
+  for (const [key, src] of Object.entries(SOUNDS)) {
+    const audio = new Audio(src);
+    audio.preload = 'auto';
+    audioCache[key] = audio;
   }
-
-  const source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioCtx.destination);
-  source.start();
 }
 
 /**
- * 3-second preparation phase: short beep on s1 and s2, long beep on s3.
- * @param {function} onComplete  called when the 3 seconds are done
+ * Plays a preloaded sound by key.
+ * Resets to start so rapid consecutive calls always fire.
+ * @param {string} key
+ */
+function play(key) {
+  const audio = audioCache[key];
+  if (!audio) return;
+  audio.currentTime = 0;
+  audio.play().catch(() => {
+    // Autoplay blocked — silently ignore (user hasn't interacted yet)
+  });
+}
+
+// ── Public API ──────────────────────────────────────────────────────────────
+
+/**
+ * 3-second preparation phase sound.
+ * The file itself contains the countdown — play it once and let it run.
+ * @param {function} onComplete  called after 3 seconds
  */
 export function playPreparationPhase(onComplete) {
-  playBeep(660, 0.12, 0.7);                          // s1 — short
-  setTimeout(() => playBeep(660, 0.12, 0.7), 1000);  // s2 — short
-  setTimeout(() => {
-    playBeep(880, 0.5, 0.9);                          // s3 — long
-    setTimeout(onComplete, 1000);                     // start after s3 finishes
-  }, 2000);
+  play('preparation');
+  setTimeout(onComplete, 3000);
 }
 
 /**
  * Played at the END of every step, just before the transition.
  */
 export function playStepEnd() {
-  playBeep(660, 0.18, 0.75);
+  play('stepEnd');
 }
 
 /**
- * 3-second transition between steps: three evenly spaced ascending ticks.
+ * Played during the 3-second transition between steps.
  */
 export function playTransitionCue() {
-  playBeep(700, 0.09, 0.6);
-  setTimeout(() => playBeep(780, 0.09, 0.65), 1000);
-  setTimeout(() => playBeep(880, 0.09, 0.7),  2000);
+  play('transition');
 }
 
 /**
- * Final long sound when the whole session ends.
+ * Final sound when the whole session ends.
  */
 export function playSessionEnd() {
-  playBeep(660, 0.15, 0.8);
-  setTimeout(() => playBeep(780, 0.15, 0.8), 200);
-  setTimeout(() => playBeep(1050, 0.6, 0.9), 450);
+  play('sessionEnd');
 }
