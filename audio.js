@@ -25,8 +25,13 @@ function play(key, onEnded) {
   audio.play().catch(() => onEnded?.());
 }
 
-export function playPreparationPhase(onComplete) {
-  play('preparation', onComplete);
+export function playBeginSound(onComplete) {
+  const sound = new Audio('./sounds/mixkit-sport-start-bleeps-918.mp3'); // or your chosen sound
+  sound.play().catch(() => {});
+  sound.addEventListener('ended', onComplete, { once: true });
+
+  // Safety: if sound fails to load, start immediately after 1s
+  sound.addEventListener('error', () => setTimeout(onComplete, 500), { once: true });
 }
 
 export function playStepEnd() {

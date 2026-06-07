@@ -4,7 +4,7 @@
 
 import { buildSteps, formatClock, SESSIONS } from './session.js';
 import {
-  playPreparationPhase,
+  playBeginSound,
   playStepEnd,
   playTransitionCue,
   cancelTransition,
@@ -14,7 +14,6 @@ import {
 const { defineComponent, ref, computed, onUnmounted } = Vue;
 
 const Phase = Object.freeze({
-  PREP:     'prep',
   RUNNING:  'running',
   FINISHED: 'finished',
 });
@@ -28,7 +27,7 @@ export const TrackerComponent = defineComponent({
     const steps      = buildSteps(SESSIONS[props.sessionId]);
     const totalSteps = steps.length;
 
-    const phase           = ref(Phase.PREP);
+    const phase           = ref(null);          // null = begin sound playing
     const currentIndex    = ref(0);
     const remaining       = ref(steps[0].duration);
     const paused          = ref(false);
@@ -38,7 +37,6 @@ export const TrackerComponent = defineComponent({
     const currentStep  = computed(() => steps[currentIndex.value]);
     const stepLabel    = computed(() => `Étape ${currentIndex.value + 1} sur ${totalSteps}`);
     const isFinished   = computed(() => phase.value === Phase.FINISHED);
-    const isPrep       = computed(() => phase.value === Phase.PREP);
     const isRunning    = computed(() => phase.value === Phase.RUNNING);
     const clockDisplay = computed(() => formatClock(remaining.value));
     const progressPct  = computed(() => {
@@ -46,6 +44,7 @@ export const TrackerComponent = defineComponent({
       return ((currentStep.value.duration - remaining.value) / currentStep.value.duration) * 100;
     });
 
+    // ── Wake Lock ──────────────────────────────────────────────────────────
     let wakeLock = null;
     async function acquireWakeLock() {
       if ('wakeLock' in navigator) {
@@ -55,6 +54,7 @@ export const TrackerComponent = defineComponent({
     function releaseWakeLock() { wakeLock?.release(); wakeLock = null; }
     acquireWakeLock();
 
+    // ── Timer ──────────────────────────────────────────────────────────────
     function startTick() {
       clearInterval(timerId);
       timerId = setInterval(tick, 1000);
@@ -66,6 +66,7 @@ export const TrackerComponent = defineComponent({
       if (remaining.value <= 0) endStep();
     }
 
+    // ── Session flow ───────────────────────────────────────────────────────
     function startSession() {
       phase.value = Phase.RUNNING;
       startTick();
@@ -74,13 +75,15 @@ export const TrackerComponent = defineComponent({
     function endStep() {
       clearInterval(timerId);
       playStepEnd();
-      if (currentIndex.value >= totalSteps - 1) { finishSession(); return; }
 
-      // Advance display to next step immediately
+      if (currentIndex.value >= totalSteps - 1) {
+        finishSession();
+        return;
+      }
+
       currentIndex.value += 1;
       remaining.value = steps[currentIndex.value].duration;
 
-      // Freeze countdown until transition sound ends
       waitingForSound.value = true;
       playTransitionCue(() => {
         waitingForSound.value = false;
@@ -94,19 +97,22 @@ export const TrackerComponent = defineComponent({
       releaseWakeLock();
     }
 
+    // ── Controls ───────────────────────────────────────────────────────────
     function togglePause() {
       if (!isRunning.value) return;
       paused.value = !paused.value;
     }
 
     function skipStep() {
-      if (isFinished.value || isPrep.value) return;
+      if (isFinished.value || phase.value === null) return;
+
       if (waitingForSound.value) {
         cancelTransition();
         waitingForSound.value = false;
         startTick();
         return;
       }
+
       clearInterval(timerId);
       endStep();
     }
@@ -114,14 +120,16 @@ export const TrackerComponent = defineComponent({
     function saveSession() { emit('saved', props.sessionId); emit('close'); }
     function close() { clearInterval(timerId); releaseWakeLock(); emit('close'); }
 
-    playPreparationPhase(startSession);
+    // Play begin sound, countdown starts immediately after it ends
+    playBeginSound(startSession);
+
     onUnmounted(() => { clearInterval(timerId); releaseWakeLock(); });
 
     return {
       steps, totalSteps, phase, Phase,
       currentIndex, remaining, paused, waitingForSound,
       currentStep, stepLabel, clockDisplay, progressPct,
-      isFinished, isPrep, isRunning,
+      isFinished, isRunning,
       togglePause, skipStep, saveSession, close,
     };
   },
@@ -135,30 +143,26 @@ export const TrackerComponent = defineComponent({
           <button class="tracker-close-btn" @click="close" aria-label="Fermer">✕</button>
         </div>
 
-        <div>
-          <span v-if="isPrep" class="tracker-type-badge" data-type="prep">⏱ Préparation</span>
-          <span v-else class="tracker-type-badge" :data-type="currentStep.type">
-            {{ currentStep.type === 'jog' ? '🏃 Course' : '🚶 Marche' }}
-          </span>
-        </div>
+        <span class="tracker-type-badge" :data-type="currentStep.type">
+          {{ currentStep.type === 'jog' ? '🏃 Course' : '🚶 Marche' }}
+        </span>
 
         <div
           id="tracker-heading"
           class="tracker-clock"
-          :class="{ 'is-jog': !isPrep && currentStep.type === 'jog' }"
+          :class="{ 'is-jog': currentStep.type === 'jog' }"
           aria-live="polite"
         >
-          <template v-if="!isPrep && !isFinished">{{ clockDisplay }}</template>
+          {{ clockDisplay }}
         </div>
 
         <div class="tracker-step-info">
           <p class="tracker-step-label">
-            <template v-if="isPrep">Préparez-vous…</template>
-            <template v-else-if="isFinished">Séance terminée !</template>
+            <template v-if="isFinished">Séance terminée !</template>
             <template v-else>{{ currentStep.label }}</template>
           </p>
           <p class="tracker-step-detail">
-            <template v-if="isPrep || isFinished">&nbsp;</template>
+            <template v-if="isFinished">&nbsp;</template>
             <template v-else>{{ currentStep.detail }}</template>
           </p>
         </div>
@@ -177,15 +181,17 @@ export const TrackerComponent = defineComponent({
           <span
             v-for="(step, i) in steps" :key="i"
             class="tracker-dot"
-            :class="{ 'is-done': i < currentIndex, 'is-current': i === currentIndex && !isPrep, 'is-jog': step.type === 'jog' }"
+            :class="{ 'is-done': i < currentIndex, 'is-current': i === currentIndex && isRunning, 'is-jog': step.type === 'jog' }"
           ></span>
         </div>
 
-        <div class="tracker-controls" v-if="!isFinished && !isPrep">
-          <button class="btn-pause" @click="togglePause" :disabled="waitingForSound">
+        <div class="tracker-controls" v-if="!isFinished">
+          <button class="btn-pause" @click="togglePause" :disabled="!isRunning || waitingForSound">
             {{ paused ? '▶ Reprendre' : '⏸ Pause' }}
           </button>
-          <button class="btn-skip" @click="skipStep">Passer →</button>
+          <button class="btn-skip" @click="skipStep" :disabled="!isRunning && !waitingForSound">
+            Passer →
+          </button>
         </div>
 
         <button v-if="isFinished" class="btn-save" @click="saveSession">
