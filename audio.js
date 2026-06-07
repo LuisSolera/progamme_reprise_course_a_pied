@@ -1,7 +1,5 @@
 // audio.js — Real audio file playback.
-// All sounds route through the media channel → headphones work, full volume.
 
-// ── Sound file paths ────────────────────────────────────────────────────────
 const SOUNDS = {
   preparation: './sounds/mixkit-start-match-countdown-1954.mp3',
   transition:  './sounds/universfield-error-011-352286.mp3',
@@ -9,8 +7,6 @@ const SOUNDS = {
   sessionEnd:  './sounds/mixkit-police-whistle-614.mp3',
 };
 
-// ── Preload all sounds at startup ───────────────────────────────────────────
-// Preloading ensures instant playback with no delay on mobile.
 const audioCache = {};
 
 export function preloadSounds() {
@@ -21,49 +17,34 @@ export function preloadSounds() {
   }
 }
 
-/**
- * Plays a preloaded sound by key.
- * Resets to start so rapid consecutive calls always fire.
- * @param {string} key
- */
-function play(key) {
+function play(key, onEnded) {
   const audio = audioCache[key];
-  if (!audio) return;
+  if (!audio) { onEnded?.(); return; }
   audio.currentTime = 0;
-  audio.play().catch(() => {
-    // Autoplay blocked — silently ignore (user hasn't interacted yet)
-  });
+  audio.onended = onEnded ? () => onEnded() : null;
+  audio.play().catch(() => onEnded?.());
 }
 
-// ── Public API ──────────────────────────────────────────────────────────────
-
-/**
- * 3-second preparation phase sound.
- * The file itself contains the countdown — play it once and let it run.
- * @param {function} onComplete  called after 3 seconds
- */
 export function playPreparationPhase(onComplete) {
-  play('preparation');
-  setTimeout(onComplete, 3000);
+  play('preparation', onComplete);
 }
 
-/**
- * Played at the END of every step, just before the transition.
- */
 export function playStepEnd() {
   play('stepEnd');
 }
 
-/**
- * Played during the 3-second transition between steps.
- */
-export function playTransitionCue() {
-  play('transition');
+export function playTransitionCue(onEnded) {
+  play('transition', onEnded);
 }
 
-/**
- * Final sound when the whole session ends.
- */
+export function cancelTransition() {
+  const audio = audioCache['transition'];
+  if (!audio) return;
+  audio.onended = null;
+  audio.pause();
+  audio.currentTime = 0;
+}
+
 export function playSessionEnd() {
   play('sessionEnd');
 }
