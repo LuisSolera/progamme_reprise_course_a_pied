@@ -48,13 +48,6 @@ export function playPreparationPhase(onComplete) {
 }
 
 /**
- * Played at the START of every step (walk or jog).
- */
-export function playStepStart() {
-  playBeep(880, 0.12, 0.75);
-}
-
-/**
  * Played at the END of every step, just before the transition.
  */
 export function playStepEnd() {

@@ -5,7 +5,6 @@
 import { buildSteps, formatClock, SESSIONS } from './session.js';
 import {
   playPreparationPhase,
-  playStepStart,
   playStepEnd,
   playTransitionCue,
   playSessionEnd,
@@ -101,7 +100,6 @@ export const TrackerComponent = defineComponent({
     /** Called once the preparation phase completes. */
     function startSession() {
       phase.value = Phase.RUNNING;
-      playStepStart();
       startTick();
     }
 
@@ -127,7 +125,6 @@ export const TrackerComponent = defineComponent({
       currentIndex.value += 1;
       remaining.value = steps[currentIndex.value].duration;
       phase.value = Phase.RUNNING;
-      playStepStart();
     }
 
     /** All steps done. */
