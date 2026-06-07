@@ -1,5 +1,5 @@
 import { doc, setDoc, deleteDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js';
-import { db } from './firebase.js';
+import { db } from './config.js';
 
 function sessionsCollection(userId) {
   return collection(db, 'users', userId, 'sessions');
