@@ -1,10 +1,8 @@
-// audio.js — Real audio file playback.
-
 const SOUNDS = {
-  preparation: './sounds/mixkit-start-match-countdown-1954.mp3',
-  transition:  './sounds/universfield-error-011-352286.mp3',
-  stepEnd:     './sounds/freesound_community-whistle-84607.mp3',
-  sessionEnd:  './sounds/mixkit-police-whistle-614.mp3',
+  begin:      './sounds/mixkit-start-match-countdown-1954.mp3',
+  transition: './sounds/universfield-error-011-352286.mp3',
+  stepEnd:    './sounds/freesound_community-whistle-84607.mp3',
+  sessionEnd: './sounds/mixkit-police-whistle-614.mp3',
 };
 
 const audioCache = {};
@@ -26,12 +24,7 @@ function play(key, onEnded) {
 }
 
 export function playBeginSound(onComplete) {
-  const sound = new Audio('./sounds/mixkit-sport-start-bleeps-918.mp3'); // or your chosen sound
-  sound.play().catch(() => {});
-  sound.addEventListener('ended', onComplete, { once: true });
-
-  // Safety: if sound fails to load, start immediately after 1s
-  sound.addEventListener('error', () => setTimeout(onComplete, 500), { once: true });
+  play('begin', onComplete);
 }
 
 export function playStepEnd() {
