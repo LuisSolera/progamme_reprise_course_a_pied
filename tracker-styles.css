@@ -202,3 +202,22 @@
 }
 .btn-save:hover  { background: color-mix(in oklch, var(--primary) 80%, black); }
 .btn-save:active { transform: scale(0.98); }
+
+/* ── Prep & transition badge variants ──────────────────────────────────── */
+.tracker-type-badge[data-type="prep"] {
+  background: color-mix(in oklch, #6a6a6a 12%, var(--surface));
+  color: var(--muted);
+}
+.tracker-type-badge[data-type="transition"] {
+  background: color-mix(in oklch, var(--primary) 10%, var(--surface));
+  color: var(--primary);
+}
+
+/* ── Clock state variants ───────────────────────────────────────────────── */
+.tracker-clock.is-transition {
+  opacity: 0.65;
+  font-size: clamp(2.5rem, 10vw, 4rem);
+}
+.tracker-clock.is-finished {
+  color: var(--muted);
+}

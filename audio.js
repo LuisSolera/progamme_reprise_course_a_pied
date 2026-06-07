@@ -1,6 +1,5 @@
 // audio.js — All audio concerns in one place.
-// Uses a real AudioBuffer (short sine burst) so the OS routes through
-// the media channel → headphones work, volume is full.
+// Uses AudioBuffer (sine bursts) — routes through media channel → headphones work.
 
 let ctx = null;
 
@@ -10,15 +9,13 @@ function getCtx() {
 }
 
 /**
- * Plays a single short beep.
- * @param {number} freq   — Hz, default 880
- * @param {number} duration — seconds, default 0.08
- * @param {number} volume  — 0–1, default 0.6
+ * Plays a single beep.
+ * @param {number} freq      Hz
+ * @param {number} duration  seconds
+ * @param {number} volume    0–1
  */
-export function playBeep(freq = 880, duration = 0.08, volume = 0.6) {
+export function playBeep(freq = 880, duration = 0.1, volume = 0.7) {
   const audioCtx = getCtx();
-
-  // Resume context if suspended (required after user gesture on mobile)
   if (audioCtx.state === 'suspended') audioCtx.resume();
 
   const frameCount = Math.ceil(audioCtx.sampleRate * duration);
@@ -26,9 +23,8 @@ export function playBeep(freq = 880, duration = 0.08, volume = 0.6) {
   const data = buffer.getChannelData(0);
 
   for (let i = 0; i < frameCount; i++) {
-    // Sine wave with linear fade-out envelope
     const t = i / audioCtx.sampleRate;
-    const envelope = 1 - i / frameCount;
+    const envelope = 1 - i / frameCount; // linear fade-out
     data[i] = Math.sin(2 * Math.PI * freq * t) * envelope * volume;
   }
 
@@ -39,18 +35,46 @@ export function playBeep(freq = 880, duration = 0.08, volume = 0.6) {
 }
 
 /**
- * Plays three spaced beeps — the "tic tic tic" countdown cue.
+ * 3-second preparation phase: short beep on s1 and s2, long beep on s3.
+ * @param {function} onComplete  called when the 3 seconds are done
  */
-export function playCountdownCue() {
-  playBeep(880, 0.09, 0.7);
-  setTimeout(() => playBeep(880, 0.09, 0.7), 320);
-  setTimeout(() => playBeep(1100, 0.12, 0.8), 640);
+export function playPreparationPhase(onComplete) {
+  playBeep(660, 0.12, 0.7);                          // s1 — short
+  setTimeout(() => playBeep(660, 0.12, 0.7), 1000);  // s2 — short
+  setTimeout(() => {
+    playBeep(880, 0.5, 0.9);                          // s3 — long
+    setTimeout(onComplete, 1000);                     // start after s3 finishes
+  }, 2000);
 }
 
 /**
- * Plays a completion chime — two ascending tones.
+ * Played at the START of every step (walk or jog).
  */
-export function playCompletionChime() {
-  playBeep(660, 0.15, 0.7);
-  setTimeout(() => playBeep(880, 0.25, 0.8), 200);
+export function playStepStart() {
+  playBeep(880, 0.12, 0.75);
+}
+
+/**
+ * Played at the END of every step, just before the transition.
+ */
+export function playStepEnd() {
+  playBeep(660, 0.18, 0.75);
+}
+
+/**
+ * 3-second transition between steps: three evenly spaced ascending ticks.
+ */
+export function playTransitionCue() {
+  playBeep(700, 0.09, 0.6);
+  setTimeout(() => playBeep(780, 0.09, 0.65), 1000);
+  setTimeout(() => playBeep(880, 0.09, 0.7),  2000);
+}
+
+/**
+ * Final long sound when the whole session ends.
+ */
+export function playSessionEnd() {
+  playBeep(660, 0.15, 0.8);
+  setTimeout(() => playBeep(780, 0.15, 0.8), 200);
+  setTimeout(() => playBeep(1050, 0.6, 0.9), 450);
 }
