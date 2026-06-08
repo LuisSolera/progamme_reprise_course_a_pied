@@ -1,5 +1,5 @@
 // session.js — Single source of truth for all session data and step building
-export const StepType = Object.freeze({ JOG: 'jog', WALK: 'walk' });
+const StepType = Object.freeze({ JOG: 'jog', WALK: 'walk' });
 
 /** @typedef {{ warmup: number, intervals: { jog: number, walk: number, count: number }, cooldown: number }} SessionDef */
 
@@ -91,7 +91,7 @@ export function buildSteps(def) {
  * @param {number} seconds
  * @returns {string}
  */
-export function formatDuration(seconds) {
+function formatDuration(seconds) {
   if (seconds < 60) return `${seconds}s`;
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
