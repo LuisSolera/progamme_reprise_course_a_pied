@@ -4,7 +4,7 @@ export const StepType = Object.freeze({ JOG: 'jog', WALK: 'walk' });
 /** @typedef {{ warmup: number, intervals: { jog: number, walk: number, count: number }, cooldown: number }} SessionDef */
 
 export const SESSIONS = {
-  'w1s1': { warmup:20, intervals:{ jog:7, walk:7, count:3  }, cooldown:20 },
+  'w1s1': { warmup:10, intervals:{ jog:5, walk:5, count:3  }, cooldown:10 },
   'w1s2': { warmup:300, intervals:{ jog:60, walk:60, count:4  }, cooldown:300 },
   'w1s3': { warmup:300, intervals:{ jog:60, walk:60, count:5  }, cooldown:300 },
   'w1s4': { warmup:300, intervals:{ jog:60, walk:60, count:6  }, cooldown:300 },

@@ -1,7 +1,3 @@
-// tracker-component.js
-// Vue 3 Tracker component.
-// Emits: 'close', 'saved' (with sessionId)
-
 import { buildSteps, formatClock, SESSIONS } from './session.js';
 import {
   playBeginSound,
