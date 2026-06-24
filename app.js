@@ -152,7 +152,7 @@ createApp({
       if (!user.value) return;
       if (!confirm('Effacer toutes les coches du programme ?')) return;
       await clearAllSessions(user.value.userId);
-      checked.value = new Set();
+      checked.value = new Map();
     }
 
     // ── Tracker ───────────────────────────────────────────────────────────────
@@ -168,7 +168,9 @@ createApp({
 
     async function onSessionSaved(sessionId) {
       if (!checked.value.has(sessionId)) {
-        await toggleSession(sessionId);
+        await toggleSession(sessionId);   // first time → check it
+      } else {
+        await repeatSession(sessionId);   // already done → increment count
       }
     }
 
@@ -198,7 +200,7 @@ createApp({
       WEEKS, TOTAL_SESSIONS,
       user, authStatus, authLoading, isLoggedIn,
       checked, totalChecked, activeSession,
-      weekCheckedCount,
+      weekCheckedCount, sessionCount, 
       handleSignIn, handleSignOut,
       toggleSession, repeatSession, resetAll,
       openTracker, closeTracker, onSessionSaved,
