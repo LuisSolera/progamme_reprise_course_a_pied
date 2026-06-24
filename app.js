@@ -96,7 +96,7 @@ createApp({
     const authLoading  = ref(false);
 
     // Programme
-    const checked       = ref(new Set());
+    const checked       = ref(new Map());
     const activeSession = ref(null);
 
     // ── Computed ──────────────────────────────────────────────────────────────
@@ -121,17 +121,30 @@ createApp({
       await signOut();
     }
 
+    function sessionCount(id) { return checked.value.get(id) ?? 0; }
+
     // ── Checkbox ──────────────────────────────────────────────────────────────
     async function toggleSession(sessionId) {
       if (!user.value) return;
-      const next = new Set(checked.value);
-      if (next.has(sessionId)) {
+
+      const next = new Map(checked.value);
+      if (next.has(sessionId)) {        
         next.delete(sessionId);
         await deleteSession(user.value.userId, sessionId);
       } else {
-        next.add(sessionId);
+        next.set(sessionId, 1);
         await saveSession(user.value.userId, sessionId);
       }
+      checked.value = next;
+    }
+
+    async function repeatSession(sessionId) {
+      if (!user.value || !checked.value.has(sessionId)) return;
+
+      const next = new Map(checked.value);
+      const newCount = (next.get(sessionId) ?? 1) + 1;
+      next.set(sessionId, newCount);
+      await saveSession(user.value.userId, sessionId);
       checked.value = next;
     }
 
@@ -174,7 +187,7 @@ createApp({
         }
       } else {
         user.value    = null;
-        checked.value = new Set();
+        checked.value = new Map();
         authStatus.value = 'Non connecté — les coches ne seront pas sauvegardées.';
       }
     });
@@ -187,7 +200,7 @@ createApp({
       checked, totalChecked, activeSession,
       weekCheckedCount,
       handleSignIn, handleSignOut,
-      toggleSession, resetAll,
+      toggleSession, repeatSession, resetAll,
       openTracker, closeTracker, onSessionSaved,
     };
   },
@@ -228,6 +241,9 @@ createApp({
                 @change="toggleSession(session.id)"
               />
               <label :for="session.id">{{ session.label }}</label>
+                <span v-if="sessionCount(s.id) > 1" class="repeat-badge">
+                    ×{{ sessionCount(s.id) }}
+                </span>
               <button
                 class="btn-start-session"
                 :data-session="session.id"

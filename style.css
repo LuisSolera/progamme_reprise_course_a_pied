@@ -179,3 +179,15 @@ button:hover { background: #d7e9ee; }
 }
 .btn-save:hover  { background: color-mix(in oklch, var(--primary) 80%, black); }
 .btn-save:active { transform: scale(0.98); }
+.repeat-badge {
+  margin-left: auto;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

@@ -11,13 +11,14 @@ function sessionDocument(userId, sessionId) {
 
 async function loadCheckedSessions(userId) {
   const snapshot = await getDocs(sessionsCollection(userId));
-  const checked = new Set();
-  snapshot.forEach(document => checked.add(document.id));
-  return checked;
+  const counts = new Map();
+  snapshot.forEach(doc => counts.set(doc.id, doc.data().count ?? 1));
+  return counts;
 }
 
 async function saveSession(userId, sessionId) {
-  await setDoc(sessionDocument(userId, sessionId), {});
+  const ref = sessionDocument(userId, sessionId);
+  await setDoc(ref, { count: increment(1) }, { merge: true });  
 }
 
 async function deleteSession(userId, sessionId) {
