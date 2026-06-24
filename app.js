@@ -243,8 +243,8 @@ createApp({
                 @change="toggleSession(session.id)"
               />
               <label :for="session.id">{{ session.label }}</label>
-                <span v-if="sessionCount(s.id) > 1" class="repeat-badge">
-                    ×{{ sessionCount(s.id) }}
+                <span v-if="sessionCount(session.id) > 1" class="repeat-badge">
+                    ×{{ sessionCount(session.id) }}
                 </span>
               <button
                 class="btn-start-session"
