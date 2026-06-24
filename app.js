@@ -174,7 +174,7 @@ createApp({
       }
     }
 
-    // ── Firebase auth observer ────────────────────────────────────────────────
+    // ── Firebase auth observer ──────────────────────────────────────────────
     observeAuthState(async u => {
       if (u) {
         user.value = u;
