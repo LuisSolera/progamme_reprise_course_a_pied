@@ -12,13 +12,13 @@ function sessionDocument(userId, sessionId) {
 async function loadCheckedSessions(userId) {
   const snapshot = await getDocs(sessionsCollection(userId));
   const counts = new Map();
-  snapshot.forEach(doc => counts.set(doc.id, doc.data().count ?? 1));
+  snapshot.forEach(document => counts.set(document.id, document.data().count ?? 1));
   return counts;
 }
 
 async function saveSession(userId, sessionId) {
   const ref = sessionDocument(userId, sessionId);
-  await setDoc(ref, { count: increment(1) }, { merge: true });  
+  await setDoc(ref, { count: increment(1) }, { merge: true });
 }
 
 async function deleteSession(userId, sessionId) {
