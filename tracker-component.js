@@ -1,18 +1,11 @@
 import { buildSteps, formatClock, SESSIONS } from './session.js';
 import {
-  playBeginSound,
-  playStepEnd,
-  playTransitionCue,
-  cancelTransition,
-  playSessionEnd,
+  playBeginSound, playStepEnd, playTransitionCue, cancelTransition, playSessionEnd,
 } from './audio.js';
 
 const { defineComponent, ref, computed, onUnmounted } = Vue;
 
-const Phase = Object.freeze({
-  RUNNING: 'running',
-  FINISHED: 'finished',
-});
+const Phase = Object.freeze({ RUNNING: 'running', FINISHED: 'finished' });
 
 export const TrackerComponent = defineComponent({
   name: 'TrackerComponent',
@@ -22,7 +15,7 @@ export const TrackerComponent = defineComponent({
     const steps = buildSteps(SESSIONS[props.sessionId]);
     const totalSteps = steps.length;
 
-    const phase = ref(null); // null = begin sound playing
+    const phase = ref(null);
     const currentIndex = ref(0);
     const remaining = ref(steps[0].duration);
     const paused = ref(false);
@@ -30,190 +23,109 @@ export const TrackerComponent = defineComponent({
     let timerId = null;
 
     const currentStep = computed(() => steps[currentIndex.value]);
-    const stepLabel = computed(() => `Étape ${currentIndex.value + 1} sur ${totalSteps}`);
+    const nextStep = computed(() => steps[currentIndex.value + 1] || null);
     const isFinished = computed(() => phase.value === Phase.FINISHED);
     const isRunning = computed(() => phase.value === Phase.RUNNING);
-    const isTransitioning = computed(() => waitingForSound.value);
     const clockDisplay = computed(() => formatClock(remaining.value));
-    const progressPct = computed(() => {
-      if (!isRunning.value || waitingForSound.value) return 0;
-      return ((currentStep.value.duration - remaining.value) / currentStep.value.duration) * 100;
+    const phaseType = computed(() => currentStep.value?.type === 'jog' ? 'run' : 'walk');
+    const phaseLabel = computed(() => {
+      if (!currentStep.value) return '';
+      if (currentStep.value.label?.toLowerCase().includes('warm')) return 'WARM UP';
+      return currentStep.value.type === 'jog' ? 'RUN' : 'WALK';
     });
 
-    // ── Wake Lock ────────────────────────────────────────────────────────────
     let wakeLock = null;
     async function acquireWakeLock() {
-      if ('wakeLock' in navigator) {
-        try { wakeLock = await navigator.wakeLock.request('screen'); } catch (_) {}
-      }
+      if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); } catch (_) {} }
     }
     function releaseWakeLock() { wakeLock?.release(); wakeLock = null; }
     acquireWakeLock();
 
-    // ── Timer ────────────────────────────────────────────────────────────────
-    function startTick() {
-      clearInterval(timerId);
-      timerId = setInterval(tick, 1000);
-    }
+    function startTick() { clearInterval(timerId); timerId = setInterval(tick, 1000); }
     function tick() {
       if (paused.value || waitingForSound.value || !isRunning.value) return;
       remaining.value -= 1;
       if (remaining.value <= 0) endStep();
     }
 
-    // ── Session flow ───────────────────────────────────────────────────────
-    function startSession() {
-      phase.value = Phase.RUNNING;
-      startTick();
-    }
+    function startSession() { phase.value = Phase.RUNNING; startTick(); }
     function endStep() {
       clearInterval(timerId);
       playStepEnd();
-      if (currentIndex.value >= totalSteps - 1) {
-        finishSession();
-        return;
-      }
+      if (currentIndex.value >= totalSteps - 1) { finishSession(); return; }
       currentIndex.value += 1;
       remaining.value = steps[currentIndex.value].duration;
       waitingForSound.value = true;
-      playTransitionCue(() => {
-        waitingForSound.value = false;
-        startTick();
-      });
+      playTransitionCue(() => { waitingForSound.value = false; startTick(); });
     }
-    function finishSession() {
-      phase.value = Phase.FINISHED;
-      playSessionEnd();
-      releaseWakeLock();
-    }
+    function finishSession() { phase.value = Phase.FINISHED; playSessionEnd(); releaseWakeLock(); }
 
-    // ── Controls ─────────────────────────────────────────────────────────────
-    function togglePause() {
-      if (!isRunning.value) return;
-      paused.value = !paused.value;
-    }
+    function togglePause() { if (!isRunning.value) return; paused.value = !paused.value; }
     function skipStep() {
       if (isFinished.value || phase.value === null) return;
-      if (waitingForSound.value) {
-        cancelTransition();
-        waitingForSound.value = false;
-        startTick();
-        return;
-      }
+      if (waitingForSound.value) { cancelTransition(); waitingForSound.value = false; startTick(); return; }
       clearInterval(timerId);
       endStep();
     }
-    function saveSession() {
-      emit('saved', props.sessionId);
-      emit('close');
-    }
-    function close() {
-      clearInterval(timerId);
-      releaseWakeLock();
-      emit('close');
-    }
+    function saveSession() { emit('saved', props.sessionId); emit('close'); }
+    function close() { clearInterval(timerId); releaseWakeLock(); emit('close'); }
 
-    // Play begin sound, countdown starts immediately after it ends
     playBeginSound(startSession);
-
-    onUnmounted(() => {
-      clearInterval(timerId);
-      releaseWakeLock();
-    });
+    onUnmounted(() => { clearInterval(timerId); releaseWakeLock(); });
 
     return {
-      steps,
-      totalSteps,
-      phase,
-      Phase,
-      currentIndex,
-      remaining,
-      paused,
-      waitingForSound,
-      isTransitioning,
-      currentStep,
-      stepLabel,
-      clockDisplay,
-      progressPct,
-      isFinished,
-      isRunning,
-      togglePause,
-      skipStep,
-      saveSession,
-      close,
+      steps, totalSteps, phase, currentIndex, remaining, paused, waitingForSound,
+      currentStep, nextStep, clockDisplay, phaseType, phaseLabel, isFinished, isRunning,
+      togglePause, skipStep, saveSession, close,
     };
   },
   template: `
-    <div class="tracker-overlay" @click.self="close">
-      <div class="tracker-card">
-        <div class="tracker-header">
-          <span class="tracker-step-counter">{{ stepLabel }}</span>
-          <button class="tracker-close-btn" @click="close" aria-label="Fermer">✕</button>
-        </div>
+    <div class="tracker-screen">
+      <div class="tracker-topbar">
+        <button class="tracker-back" @click="close">← Back</button>
+        <span class="tracker-meta">WK · S{{ currentIndex + 1 }}</span>
+      </div>
 
-        <span
-          v-if="!isFinished"
-          class="tracker-type-badge"
-          :data-type="currentStep.type"
-        >
-          {{ currentStep.type === 'jog' ? 'Course' : 'Marche' }}
-        </span>
-
+      <div class="tracker-top-progress">
         <div
-          class="tracker-clock"
-          :class="{
-            'is-jog': !isFinished && currentStep.type === 'jog',
-            'is-transitioning': isTransitioning,
-            'is-finished': isFinished
-          }"
-        >
-          {{ isFinished ? '🏁' : clockDisplay }}
-        </div>
+          class="tracker-top-progress-fill"
+          :class="{ walk: phaseType === 'walk' }"
+          :style="{ width: ((currentIndex) / totalSteps * 100) + '%' }"
+        ></div>
+      </div>
 
-        <div class="tracker-step-info">
-          <p class="tracker-step-label">
-            {{ isFinished ? 'Séance terminée !' : currentStep.label }}
+      <div class="tracker-center">
+        <template v-if="!isFinished">
+          <p class="tracker-phase-label" :class="phaseType">{{ phaseLabel }}</p>
+          <div class="tracker-clock">{{ clockDisplay }}</div>
+          <p class="tracker-step-count">Step {{ currentIndex + 1 }} of {{ totalSteps }}</p>
+          <div class="tracker-dots-row">
+            <span
+              v-for="(step, i) in steps" :key="i"
+              class="tracker-dot"
+              :class="[step.type === 'jog' ? 'run' : 'walk', { 'is-done': i < currentIndex, 'is-current': i === currentIndex }]"
+            ></span>
+          </div>
+          <p class="tracker-next-line" v-if="nextStep">
+            Next: <b :class="nextStep.type === 'jog' ? 'run' : 'walk'">{{ nextStep.type === 'jog' ? 'RUN' : 'WALK' }}</b>
+            · {{ Math.round(nextStep.duration / 60) }} min
           </p>
-          <p class="tracker-step-detail" v-if="!isFinished">
-            {{ currentStep.detail }}
-          </p>
-        </div>
+        </template>
+        <template v-else>
+          <p class="tracker-phase-label">DONE</p>
+          <div class="tracker-clock">🏁</div>
+          <p class="tracker-step-count">Session complete</p>
+        </template>
+      </div>
 
-        <div class="tracker-progress-track" v-if="!isFinished">
-          <div
-            class="tracker-progress-fill"
-            :data-type="currentStep.type"
-            :style="{ width: progressPct + '%' }"
-          ></div>
-        </div>
-
-        <div class="tracker-dots" v-if="!isFinished">
-          <span
-            v-for="(step, i) in steps"
-            :key="i"
-            class="tracker-dot"
-            :class="{
-              'is-done': i < currentIndex,
-              'is-current': i === currentIndex,
-              'is-jog': step.type === 'jog',
-              'is-walk': step.type === 'walk'
-            }"
-          ></span>
-        </div>
-
-        <div class="tracker-controls" v-if="!isFinished">
-          <button class="btn-pause" @click="togglePause" :disabled="waitingForSound">
-            {{ paused ? 'Reprendre' : 'Pause' }}
-          </button>
-          <button class="btn-skip" @click="skipStep" :disabled="currentIndex >= totalSteps - 1 && !waitingForSound">
-            Passer
-          </button>
-        </div>
-
-        <button class="btn-save" v-if="isFinished" @click="saveSession">
-          Enregistrer la séance
+      <div class="tracker-controls" v-if="!isFinished">
+        <button @click="skipStep" :disabled="currentIndex >= totalSteps - 1 && !waitingForSound">Skip →</button>
+        <button class="btn-tracker-primary" @click="togglePause" :disabled="waitingForSound">
+          {{ paused ? '▶ Start' : '⏸ Pause' }}
         </button>
       </div>
+
+      <button v-else class="btn-save" @click="saveSession">Save Session</button>
     </div>
   `,
 });
