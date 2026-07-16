@@ -80,13 +80,45 @@ createApp({
     // Programme
     const checked = ref(new Map()); // Map<sessionId, count>
     const activeSession = ref(null);
+    const expandedWeek = ref(1); // which week number is expanded (accordion)
 
     // ── Computed ────────────────────────────────────────────────────────────
     const totalChecked = computed(() => checked.value.size);
+
     function weekCheckedCount(week) {
       return week.sessions.filter(s => checked.value.has(s.id)).length;
     }
+
+    function isWeekComplete(week) {
+      return weekCheckedCount(week) === week.sessions.length;
+    }
+
     const isLoggedIn = computed(() => user.value !== null);
+
+    // Next uncompleted session, in program order
+    const nextSession = computed(() => {
+      for (const week of WEEKS) {
+        for (const session of week.sessions) {
+          if (!checked.value.has(session.id)) {
+            return { week, session };
+          }
+        }
+      }
+      return null; // programme fully completed
+    });
+
+    // The week that should be open by default: the one containing the next session
+    const currentWeekNumber = computed(() => {
+      return nextSession.value ? nextSession.value.week.number : WEEKS[WEEKS.length - 1].number;
+    });
+
+    function toggleWeek(weekNumber) {
+      expandedWeek.value = expandedWeek.value === weekNumber ? null : weekNumber;
+    }
+
+    function isWeekExpanded(weekNumber) {
+      return expandedWeek.value === weekNumber;
+    }
 
     // ── Auth ────────────────────────────────────────────────────────────────
     async function handleSignIn() {
@@ -159,6 +191,14 @@ createApp({
       } else {
         await repeatSession(sessionId);
       }
+      // Keep the accordion following progress: jump to the week of the new next session
+      expandedWeek.value = currentWeekNumber.value;
+    }
+
+    function startNextSession() {
+      if (!nextSession.value) return;
+      expandedWeek.value = nextSession.value.week.number;
+      openTracker(nextSession.value.session.id);
     }
 
     // ── Firebase auth observer ────────────────────────────────────────────────
@@ -170,6 +210,7 @@ createApp({
           const loaded = await loadCheckedSessions(u.userId);
           checked.value = loaded;
           authStatus.value = `Connecté : ${u.email}`;
+          expandedWeek.value = currentWeekNumber.value;
         } catch {
           await signOut();
           authStatus.value = "Accès refusé. Ce compte n'est pas autorisé.";
@@ -193,7 +234,12 @@ createApp({
       checked,
       totalChecked,
       activeSession,
+      nextSession,
+      expandedWeek,
       weekCheckedCount,
+      isWeekComplete,
+      isWeekExpanded,
+      toggleWeek,
       sessionCount,
       handleSignIn,
       handleSignOut,
@@ -203,14 +249,14 @@ createApp({
       openTracker,
       closeTracker,
       onSessionSaved,
+      startNextSession,
     };
   },
   template: `
     <div class="app">
       <header>
         <h1>Programme course à pied fractionné</h1>
-        <p class="subtitle">8 semaines pour progresser du fractionné court au 30 minutes en continu.</p>
-        <p class="info">Coche chaque séance une fois réalisée. Relance une séance pour incrémenter son compteur de répétitions.</p>
+        <p class="progress-line">{{ totalChecked }} / {{ TOTAL_SESSIONS }} séances complétées</p>
 
         <div class="auth-bar">
           <button v-if="!isLoggedIn" @click="handleSignIn" :disabled="authLoading">
@@ -221,14 +267,40 @@ createApp({
         </div>
       </header>
 
-      <main class="weeks">
-        <section v-for="week in WEEKS" :key="week.number" class="week">
-          <div class="week-header">
-            <span class="week-title">{{ week.label }}</span>
-            <span class="week-counter">{{ weekCheckedCount(week) }} / {{ week.sessions.length }}</span>
-          </div>
+      <section v-if="nextSession" class="next-up-card">
+        <span class="next-up-tag">Prochaine séance</span>
+        <p class="next-up-label">{{ nextSession.session.label }}</p>
+        <p class="next-up-week">{{ nextSession.week.label }}</p>
+        <button class="btn-start-session btn-start-session--hero" @click="startNextSession">
+          Démarrer la séance
+        </button>
+      </section>
 
-          <ul>
+      <section v-else class="next-up-card next-up-card--done">
+        <span class="next-up-tag">Programme terminé</span>
+        <p class="next-up-label">Toutes les séances sont complétées 🎉</p>
+      </section>
+
+      <main class="weeks">
+        <section
+          v-for="week in WEEKS"
+          :key="week.number"
+          class="week"
+          :class="{ 'is-complete': isWeekComplete(week) }"
+        >
+          <button
+            class="week-header"
+            @click="toggleWeek(week.number)"
+            :aria-expanded="isWeekExpanded(week.number)"
+          >
+            <span class="week-title">{{ week.label }}</span>
+            <span class="week-header-right">
+              <span class="week-counter">{{ weekCheckedCount(week) }} / {{ week.sessions.length }}</span>
+              <span class="week-chevron" :class="{ 'is-open': isWeekExpanded(week.number) }">⌄</span>
+            </span>
+          </button>
+
+          <ul v-show="isWeekExpanded(week.number)">
             <li v-for="session in week.sessions" :key="session.id">
               <input
                 type="checkbox"
@@ -244,11 +316,8 @@ createApp({
               >
                 {{ sessionCount(session.id) }}
               </span>
-              <button
-                class="btn-start-session"
-                @click="openTracker(session.id)"
-              >
-                Démarrer la séance
+              <button class="btn-start-session" @click="openTracker(session.id)">
+                Démarrer
               </button>
             </li>
           </ul>
@@ -256,7 +325,6 @@ createApp({
       </main>
 
       <footer class="footer">
-        <span class="small-text">{{ totalChecked }} / {{ TOTAL_SESSIONS }} séances complétées au total.</span>
         <button v-if="isLoggedIn" @click="resetAll">Réinitialiser</button>
       </footer>
 

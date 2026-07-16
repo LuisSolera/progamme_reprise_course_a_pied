@@ -1,3 +1,8 @@
+/* Art direction: fractional running program → energetic, sporty, motivating
+   Palette: dark athletic surfaces + vivid orange/teal accent (jog vs walk)
+   Typography: Space Grotesk-inspired system stack + tabular numerals for timer
+   Density: mobile-first, generous tap targets, compact rows */
+
 :root {
   --bg:            #12151a;
   --surface:       #1a1f26;
@@ -401,3 +406,109 @@ button:active { transform: scale(0.97); }
   flex-shrink: 0;
 }
 .btn-start-session:hover { background: var(--primary-hover); }
+
+/* ══════════════════════════════════════════════════════════════════
+   FOCUSED MAIN SCREEN — accordion weeks + next-session hero card
+   Nothing here is position:fixed/sticky — everything flows with scroll.
+   ══════════════════════════════════════════════════════════════════ */
+
+.progress-line {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Next-up hero card — the one dominant action on the page ─────── */
+.next-up-card {
+  margin: 1.1rem 0 1.25rem;
+  padding: 1.35rem 1.25rem;
+  background: linear-gradient(155deg, var(--primary-highlight), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.next-up-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.next-up-label {
+  margin: 0.1rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.next-up-week {
+  margin: 0 0 0.6rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.btn-start-session--hero {
+  align-self: flex-start;
+  padding: 0.7rem 1.4rem;
+  font-size: 0.92rem;
+}
+
+.next-up-card--done {
+  background: color-mix(in oklch, var(--accent-walk) 12%, var(--surface));
+}
+
+/* ── Accordion week header — replaces static header ───────────────── */
+.week {
+  padding: 0;
+  overflow: hidden;
+}
+
+.week-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  margin: 0;
+  background: none;
+  border: none;
+  border-bottom: none;
+  border-radius: 0;
+  cursor: pointer;
+  text-align: left;
+  min-height: 44px;
+}
+.week-header:hover { background: var(--surface-offset); }
+
+.week-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.week-chevron {
+  display: inline-block;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+.week-chevron.is-open { transform: rotate(180deg); }
+
+.week.is-complete .week-counter {
+  color: var(--accent-walk);
+  background: var(--accent-walk-highlight);
+}
+
+.week ul { padding: 0 1rem 0.7rem; }
+.week li:first-child { border-top: 1px solid var(--border); padding-top: 0.7rem; }
+
+/* ── Fluid rhythm: everything scales with viewport, nothing fixed ─── */
+.app { padding-inline: clamp(0.9rem, 4vw, 1.5rem); }
+.next-up-card { padding: clamp(1rem, 4vw, 1.6rem); }
