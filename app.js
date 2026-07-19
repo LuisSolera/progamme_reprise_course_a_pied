@@ -7,6 +7,9 @@ import { preloadSounds } from './audio.js';
 const { createApp, ref, computed } = Vue;
 
 const WEEKS = [
+  { number: 0, label: 'Week 0', sessions: [
+    { id: 'w0s0', label: "30''M + 3x (10'C / 10'M) + 30''M" },
+  ]},
   { number: 1, label: 'Week 1', sessions: [
     { id: 'w1s1', label: "5'M + 3x (1'C / 1'M) + 5'M" },
     { id: 'w1s2', label: "5'M + 4x (1'C / 1'M) + 5'M" },

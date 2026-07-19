@@ -58,7 +58,7 @@ export const TrackerComponent = defineComponent({
         waitingForSound.value = false;
         startTick();
       });
-}
+    }
 
     function finishSession() { phase.value = Phase.FINISHED; playSessionEnd(); releaseWakeLock(); }
 
@@ -69,7 +69,9 @@ export const TrackerComponent = defineComponent({
       clearInterval(timerId);
       endStep();
     }
+
     function saveSession() { emit('saved', props.sessionId); emit('close'); }
+    
     function close() { clearInterval(timerId); releaseWakeLock(); emit('close'); }
 
     playBeginSound(startSession);
