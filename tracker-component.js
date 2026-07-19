@@ -1,7 +1,5 @@
 import { buildSteps, formatClock, SESSIONS } from './session.js';
-import {
-  playBeginSound, playStepEnd, playTransitionCue, cancelTransition, playSessionEnd,
-} from './audio.js';
+import { playBeginSound, playTransitionCue, cancelTransition, playSessionEnd } from './audio.js';
 
 const { defineComponent, ref, computed, onUnmounted } = Vue;
 
@@ -49,15 +47,19 @@ export const TrackerComponent = defineComponent({
     }
 
     function startSession() { phase.value = Phase.RUNNING; startTick(); }
+
     function endStep() {
       clearInterval(timerId);
-      playStepEnd();
       if (currentIndex.value >= totalSteps - 1) { finishSession(); return; }
       currentIndex.value += 1;
       remaining.value = steps[currentIndex.value].duration;
       waitingForSound.value = true;
-      playTransitionCue(() => { waitingForSound.value = false; startTick(); });
-    }
+      playTransitionCue(() => {
+        waitingForSound.value = false;
+        startTick();
+      });
+}
+
     function finishSession() { phase.value = Phase.FINISHED; playSessionEnd(); releaseWakeLock(); }
 
     function togglePause() { if (!isRunning.value) return; paused.value = !paused.value; }

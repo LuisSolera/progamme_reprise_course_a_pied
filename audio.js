@@ -1,7 +1,6 @@
 const SOUNDS = {
   begin:      './sounds/mixkit-start-match-countdown-1954.mp3',
   transition: './sounds/universfield-error-011-352286.mp3',
-  stepEnd:    './sounds/freesound_community-whistle-84607.mp3',
   sessionEnd: './sounds/mixkit-police-whistle-614.mp3',
 };
 
@@ -25,10 +24,6 @@ function play(key, onEnded) {
 
 export function playBeginSound(onComplete) {
   play('begin', onComplete);
-}
-
-export function playStepEnd() {
-  play('stepEnd');
 }
 
 export function playTransitionCue(onEnded) {
