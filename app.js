@@ -196,7 +196,7 @@ createApp({
     return {
       WEEKS, TOTAL_SESSIONS, user, authStatus, authLoading, isLoggedIn,
       checked, totalChecked, progressPct, activeSession, nextSession,
-      expandedWeek, weekCheckedCount, isWeekComplete, isWeekExpanded,
+      expandedWeek, weekCheckedCount, currentWeekNumber, isWeekComplete, isWeekExpanded,
       isCurrentWeek, toggleWeek, sessionCount, handleSignIn, handleSignOut,
       toggleSession, repeatSession, resetAll, openTracker, closeTracker,
       onSessionSaved, startNextSession,
