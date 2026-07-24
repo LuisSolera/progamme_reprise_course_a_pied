@@ -1,3 +1,18 @@
+let audioCtx = null;
+export function getAudioContext() {
+  if (!audioCtx) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioCtx();
+  }
+  return audioCtx;
+}
+
+export function resumeAudioContext() {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
 const SOUNDS = {
   begin:      './sounds/mixkit-start-match-countdown-1954.mp3',
   transition: './sounds/universfield-error-011-352286.mp3',

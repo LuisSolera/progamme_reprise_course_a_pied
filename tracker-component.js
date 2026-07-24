@@ -1,5 +1,5 @@
 import { buildSteps, formatClock, SESSIONS } from './session.js';
-import { playBeginSound, playTransitionCue, cancelTransition, playSessionEnd } from './audio.js';
+import { playBeginSound, playTransitionCue, cancelTransition, playSessionEnd, resumeAudioContext} from './audio.js';
 
 const { defineComponent, ref, computed, onUnmounted } = Vue;
 
@@ -36,13 +36,25 @@ export const TrackerComponent = defineComponent({
     async function acquireWakeLock() {
       if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); } catch (_) {} }
     }
+
     function releaseWakeLock() { wakeLock?.release(); wakeLock = null; }
     acquireWakeLock();
 
+    async function handleVisibilityChange() {
+      if (document.visibilityState === 'visible' && isRunning.value) {
+        await acquireWakeLock();
+        resumeAudioContext();
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     function startTick() { clearInterval(timerId); timerId = setInterval(tick, 1000); }
+
+    let stepEndTime = Date.now() + currentStep.value.duration * 1000;
     function tick() {
       if (paused.value || waitingForSound.value || !isRunning.value) return;
-      remaining.value -= 1;
+      const secondsLeft = Math.round((stepEndTime - Date.now()) / 1000);
+      remaining.value = Math.max(0, secondsLeft);
       if (remaining.value <= 0) endStep();
     }
 
@@ -75,7 +87,12 @@ export const TrackerComponent = defineComponent({
     function close() { clearInterval(timerId); releaseWakeLock(); emit('close'); }
 
     playBeginSound(startSession);
-    onUnmounted(() => { clearInterval(timerId); releaseWakeLock(); });
+
+    onUnmounted(() => {
+      clearInterval(timerId);
+      releaseWakeLock();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    });
 
     return {
       steps, totalSteps, phase, currentIndex, remaining, paused, waitingForSound,
