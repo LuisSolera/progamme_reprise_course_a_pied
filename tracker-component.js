@@ -55,7 +55,6 @@ export const TrackerComponent = defineComponent({
       timerId = setInterval(tick, 250);
     }
 
-    let stepEndTime = Date.now() + currentStep.value.duration * 1000;
     function tick() {
       if (paused.value || waitingForSound.value || !isRunning.value) return;
 
@@ -108,7 +107,7 @@ export const TrackerComponent = defineComponent({
         startTick(); 
         return; 
       }
-      
+
       clearInterval(timerId);
       endStep();
     }
