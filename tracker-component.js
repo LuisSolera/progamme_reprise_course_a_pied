@@ -100,14 +100,16 @@ export const TrackerComponent = defineComponent({
     function skipStep() {
       if (isFinished.value || phase.value === null) return;
 
-      if (waitingForSound.value) { 
-        cancelTransition(); 
-        waitingForSound.value = false; 
-        stepEndTime = Date.now() + steps[currentIndex.value].duration * 1000; 
-        startTick(); 
-        return; 
+      paused.value = false;
+      pausedAt = null;
+      if (waitingForSound.value) {
+        cancelTransition();
+        waitingForSound.value = false;
+        stepEndTime = Date.now() + steps[currentIndex.value].duration * 1000;
+        startTick();
+        return;
       }
-
+      
       clearInterval(timerId);
       endStep();
     }
