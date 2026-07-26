@@ -19,6 +19,8 @@ export const TrackerComponent = defineComponent({
     const paused = ref(false);
     const waitingForSound = ref(false);
     let timerId = null;
+    let stepEndTime = null;
+    let pausedAt = null;
 
     const currentStep = computed(() => steps[currentIndex.value]);
     const nextStep = computed(() => steps[currentIndex.value + 1] || null);
@@ -48,17 +50,25 @@ export const TrackerComponent = defineComponent({
     }
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    function startTick() { clearInterval(timerId); timerId = setInterval(tick, 1000); }
+    function startTick() {
+      clearInterval(timerId);
+      timerId = setInterval(tick, 250);
+    }
 
     let stepEndTime = Date.now() + currentStep.value.duration * 1000;
     function tick() {
       if (paused.value || waitingForSound.value || !isRunning.value) return;
-      const secondsLeft = Math.round((stepEndTime - Date.now()) / 1000);
+
+      const secondsLeft = Math.ceil((stepEndTime - Date.now()) / 1000);
       remaining.value = Math.max(0, secondsLeft);
       if (remaining.value <= 0) endStep();
     }
 
-    function startSession() { phase.value = Phase.RUNNING; startTick(); }
+    function startSession() {
+      phase.value = Phase.RUNNING;
+      stepEndTime = Date.now() + steps[0].duration * 1000; // starts NOW, not at mount
+      startTick();
+    }
 
     function endStep() {
       clearInterval(timerId);
@@ -68,16 +78,37 @@ export const TrackerComponent = defineComponent({
       waitingForSound.value = true;
       playTransitionCue(() => {
         waitingForSound.value = false;
+        stepEndTime = Date.now() + steps[currentIndex.value].duration * 1000; // new step, new deadline
         startTick();
       });
     }
 
     function finishSession() { phase.value = Phase.FINISHED; playSessionEnd(); releaseWakeLock(); }
 
-    function togglePause() { if (!isRunning.value) return; paused.value = !paused.value; }
+    function togglePause() {
+      if (!isRunning.value) return;
+
+      if (!paused.value) {
+        pausedAt = Date.now();
+        paused.value = true;
+      } else {
+        const pauseDuration = Date.now() - pausedAt;
+        stepEndTime += pauseDuration; // shift deadline forward by however long we paused
+        paused.value = false;
+      }
+    }
+
     function skipStep() {
       if (isFinished.value || phase.value === null) return;
-      if (waitingForSound.value) { cancelTransition(); waitingForSound.value = false; startTick(); return; }
+
+      if (waitingForSound.value) { 
+        cancelTransition(); 
+        waitingForSound.value = false; 
+        stepEndTime = Date.now() + steps[currentIndex.value].duration * 1000; 
+        startTick(); 
+        return; 
+      }
+      
       clearInterval(timerId);
       endStep();
     }
