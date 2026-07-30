@@ -1,5 +1,5 @@
 import { buildSteps, formatClock, SESSIONS } from './session.js';
-import { playBeginSound, playTransitionCue, cancelTransition, playSessionEnd, resumeAudioContext} from './audio.js';
+import { playBeginSound, playTransitionCue, cancelTransition, playSessionEnd, unlockAudio,} from './audio.js';
 
 const { defineComponent, ref, computed, onUnmounted } = Vue;
 
@@ -45,7 +45,7 @@ export const TrackerComponent = defineComponent({
     async function handleVisibilityChange() {
       if (document.visibilityState === 'visible' && isRunning.value) {
         await acquireWakeLock();
-        resumeAudioContext();
+        unlockAudio();
       }
     }
     document.addEventListener('visibilitychange', handleVisibilityChange);
